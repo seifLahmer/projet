@@ -1,5 +1,6 @@
 package Services;
 
+import Entite.Payment;
 import Entite.Reservation;
 import Utils.DataSource;
 
@@ -63,6 +64,8 @@ public class ServiceReservation implements IService<Reservation>{
         pre.executeUpdate();
         System.out.println("Réservation mise à jour avec succès !");
     }
+
+
 
 
     @Override

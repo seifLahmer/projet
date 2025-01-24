@@ -1,5 +1,7 @@
 package Services;
 
+import Entite.Payment;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
