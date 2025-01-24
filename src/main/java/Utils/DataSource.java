@@ -9,11 +9,11 @@ public class DataSource {
     private String url = "jdbc:mysql://localhost:3306/projet_gym";
     private String user = "root";
     private String password = "";
-    private Connection con;
+    private Connection conn;
 
     private DataSource() {
         try {
-            con=DriverManager.getConnection(url,user,password);
+            conn=DriverManager.getConnection(url,user,password);
             System.out.println("connexion établie");
         } catch (SQLException e) {
             System.out.println(e);
@@ -21,7 +21,7 @@ public class DataSource {
     }
 
     public Connection getCon() {
-        return con;
+        return conn;
     }
 
     public static DataSource getInstance() {
