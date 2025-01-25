@@ -24,13 +24,14 @@ public class ServiceActivity implements IService<Activity>{
 
     @Override
     public void ajouter(Activity activity) throws SQLException {
-        PreparedStatement pre= conn.prepareStatement("INSERT INTO Activity (name,description,capacity, date,hour,duration) VALUES (?,?,?,?,?,? );");
-        pre.setInt(3,activity.getCapacity());
+        PreparedStatement pre= conn.prepareStatement("INSERT INTO Activity (activityname,description,maxMembers, date,hour,duration,memberId) VALUES (?,?,?,?,?,? ,?);");
+        pre.setInt(3,activity.getMaxMembers());
         pre.setString(2,activity.getDescription());
-        pre.setString(1, activity.getName());
+        pre.setString(1, activity.getActivityName());
         pre.setDate(4, new java.sql.Date(activity.getDate().getTime()));
         pre.setTime(5,activity.getHour());
         pre.setInt(6,activity.getDuration());
+        pre.setInt(7,activity.getMemberId());
 
         pre.executeUpdate();
         System.out.println("activite ajoutée");
@@ -45,22 +46,24 @@ public class ServiceActivity implements IService<Activity>{
     }
 
     @Override
-    public void update(Activity activity, Map<String, Object> data) throws SQLException {
+    public void update(Activity activity) throws SQLException {
         // Construction de la requête SQL
-        String query = "UPDATE Activity SET ";
-        query += String.join(" = ?, ", data.keySet()) + " = ? WHERE activityId = ?";
+        String query = "UPDATE Activity SET activityName = ?, description = ?, memberId = ?, date = ?, duration = ?, maxMembers = ?, hour = ? WHERE activityId = ?";
 
         // Préparation de la requête
         PreparedStatement pre = conn.prepareStatement(query);
 
         // Ajout des valeurs dans le PreparedStatement
-        int index = 1;
-        for (Object value : data.values()) {
-            pre.setObject(index++, value); // setObject simplifie la gestion des types
-        }
+        pre.setString(1, activity.getActivityName());
+        pre.setString(2, activity.getDescription());
+        pre.setInt(3, activity.getMemberId());
+        pre.setDate(4, new java.sql.Date(activity.getDate().getTime()));
+        pre.setInt(5, activity.getDuration());
+        pre.setInt(6, activity.getMaxMembers());
+        pre.setTime(7, activity.getHour());
 
         // Ajout de l'ID de l'activité (clé primaire)
-        pre.setInt(index, activity.getActivityId());
+        pre.setInt(8, activity.getActivityId());
 
         // Exécution de la requête
         pre.executeUpdate();
@@ -75,14 +78,15 @@ public class ServiceActivity implements IService<Activity>{
         ResultSet reset=stat.executeQuery("select * from Activity");
         while (reset.next()) {
             int activityId=reset.getInt(1);
-            String name=reset.getString(2);
-            String description  =reset.getString(3);
-            int capacite = reset.getInt(4);
+            int memberId = reset.getInt(2);
+            String name=reset.getString(3);
+            String description  =reset.getString(4);
+            int capacite = reset.getInt(8);
             Date date=reset.getDate(5);
-            Time hour = reset.getTime(6);
-            int duration = reset.getInt(7);
+            Time hour = reset.getTime(7);
+            int duration = reset.getInt(6);
 
-            Activity r=new Activity(activityId,name,description,capacite,date,hour,duration);
+            Activity r=new Activity( activityId,  name,  description,  capacite,  date,  hour,  duration,  memberId);
 
             list.add(r);
         }
@@ -96,21 +100,22 @@ public class ServiceActivity implements IService<Activity>{
         pre.setInt(1, id);
 
         // Exécution de la requête
-        ResultSet resultSet = pre.executeQuery();
+        ResultSet reset = pre.executeQuery();
 
         // Vérification si une activité est trouvée
-        if (resultSet.next()) {
+        if (reset.next()) {
             // Extraction des données
-            int activityId = resultSet.getInt(1);
-            String name = resultSet.getString(2);
-            String description = resultSet.getString(3);
-            int capacity = resultSet.getInt(4);
-            Date date = resultSet.getDate(5);
-            Time hour = resultSet.getTime(6);
-            int duration = resultSet.getInt(7);
+            int activityId=reset.getInt(1);
+            int memberId = reset.getInt(2);
+            String name=reset.getString(3);
+            String description  =reset.getString(4);
+            int capacite = reset.getInt(8);
+            Date date=reset.getDate(5);
+            Time hour = reset.getTime(7);
+            int duration = reset.getInt(6);
 
-            // Création et retour de l'objet Activity
-            return new Activity(activityId, name, description, capacity, date, hour, duration);
+            Activity r=new Activity( activityId,  name,  description,  capacite,  date,  hour,  duration,  memberId);
+            return r;
         }
 
         // Si aucune activité n'est trouvée

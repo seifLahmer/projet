@@ -48,6 +48,7 @@
                     </mainClass>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

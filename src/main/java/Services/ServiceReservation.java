@@ -25,7 +25,8 @@ public class ServiceReservation implements IService<Reservation>{
 
     @Override
     public void ajouter(Reservation reservation) throws SQLException {
-        PreparedStatement pre= conn.prepareStatement("INSERT INTO Reservation (memberId,activityId,date) VALUES (?,?,? );");
+
+        PreparedStatement pre= conn.prepareStatement("INSERT INTO Reservation (memberId,activityId,reservationdate) VALUES (?,?,? );");
         pre.setInt(1,reservation.getMemberId());
         pre.setInt(2,reservation.getActivityId());
         pre.setDate(3, new java.sql.Date(reservation.getReservationDate().getTime()));
@@ -43,24 +44,25 @@ public class ServiceReservation implements IService<Reservation>{
     }
 
     @Override
-    public void update(Reservation reservation, Map<String, Object> data) throws SQLException {
+    public void update(Reservation reservation) throws SQLException {
         // Construction de la requête SQL
-        String query = "UPDATE Reservation SET ";
-        query += String.join(" = ?, ", data.keySet()) + " = ? WHERE reservationId = ?";
+        String query = "UPDATE Reservation SET memberId = ?, activityId = ?, reservationDate = ? WHERE reservationId = ?";
 
         // Préparation de la requête
         PreparedStatement pre = conn.prepareStatement(query);
 
         // Ajout des valeurs dans le PreparedStatement
-        int index = 1;
-        for (Object value : data.values()) {
-            pre.setObject(index++, value); // setObject simplifie la gestion des types
-        }
+        pre.setInt(1, reservation.getMemberId());
+        pre.setInt(2, reservation.getActivityId());
 
-        // Ajout de l'ID de réservation
-        pre.setInt(index, reservation.getReservationId());
+        // Conversion de java.util.Date en java.sql.Date
+        java.sql.Date sqlDate = new java.sql.Date(reservation.getReservationDate().getTime());
+        pre.setDate(3, sqlDate); // Utilisation de l'objet java.sql.Date
 
-        // Exécution de la mise à jour
+        // Ajout de l'ID de la réservation
+        pre.setInt(4, reservation.getReservationId());
+
+        // Exécution de la requête
         pre.executeUpdate();
         System.out.println("Réservation mise à jour avec succès !");
     }
