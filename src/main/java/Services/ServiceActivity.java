@@ -1,9 +1,11 @@
 package Services;
 
 import Entite.Activity;
+import Entite.MapCoachActivities;
 import Entite.Reservation;
 import Utils.DataSource;
 
+import java.lang.reflect.Member;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +15,9 @@ import java.util.Map;
 public class ServiceActivity implements IService<Activity>{
     private Connection conn = DataSource.getInstance().getCon();
     private Statement stat= null ;
+    private List<Member> coaches= new ArrayList<>() ;
+
+
 
     public ServiceActivity() {
         try {

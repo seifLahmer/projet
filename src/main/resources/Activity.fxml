@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -18,7 +19,7 @@
         <Label layoutX="20.0" layoutY="200.0" text="Hour" />
         <Label layoutX="20.0" layoutY="250.0" text="Duration (min)" />
         <Label layoutX="20.0" layoutY="300.0" text="Max Members" />
-        <Label layoutX="20.0" layoutY="350.0" text="CoachID" />
+        <Label layoutX="20.0" layoutY="350.0" text="Coach Name" />
 
         <!-- Input Fields -->
         <TextField fx:id="nameId" layoutX="122.0" layoutY="35.0" prefWidth="200.0" />
@@ -27,20 +28,20 @@
         <TextField fx:id="hourId" layoutX="122.0" layoutY="195.0" prefWidth="200.0" />
         <TextField fx:id="durationId" layoutX="122.0" layoutY="245.0" prefWidth="200.0" />
         <TextField fx:id="maxID" layoutX="122.0" layoutY="295.0" prefWidth="200.0" />
-        <TextField fx:id="coachId" layoutX="122.0" layoutY="345.0" prefWidth="200.0" />
 
         <!-- Buttons -->
         <Button layoutX="368.0" layoutY="350.0" mnemonicParsing="false" onAction="#add" text="Add" />
         <Button layoutX="438.0" layoutY="350.0" mnemonicParsing="false" onAction="#update" text="Update" />
         <Button layoutX="508.0" layoutY="350.0" mnemonicParsing="false" onAction="#delete" text="Delete" />
 
-        <TableView fx:id="tableID" layoutX="350.0" layoutY="35.0" prefHeight="302.0" prefWidth="230.0" onMouseClicked="#loadDataToForm">
+        <TableView fx:id="tableID" layoutX="350.0" layoutY="35.0" onMouseClicked="#loadDataToForm" prefHeight="302.0" prefWidth="230.0">
         <columns>
             <TableColumn fx:id="nameColumnID" prefWidth="80.79998779296875" text="Activity Name" />
           <TableColumn fx:id="dateColumnId" prefWidth="72.0" text="Date" />
           <TableColumn fx:id="maxColumnId" prefWidth="75.2000732421875" text="Max members" />
         </columns>
       </TableView>
+      <ComboBox fx:id="listID" layoutX="135.0" layoutY="347.0" prefWidth="150.0" onMouseClicked="#onCoachSelected"/>
 
     </children>
 </AnchorPane>

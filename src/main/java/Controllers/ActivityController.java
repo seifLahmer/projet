@@ -1,8 +1,11 @@
 package Controllers;
 
 import Entite.Activity;
+import Entite.MapCoachActivities;
+import Entite.Member;
+import Entite.MemberList;
 import Services.ServiceActivity;
-import javafx.beans.Observable;
+import Services.ServiceMember;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,9 +19,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class ActivityController {
 
@@ -50,11 +52,16 @@ public class ActivityController {
 
     @FXML
     private TextField nameId;
+    @FXML
+    private ComboBox<String> listID;
 
 
+    ServiceMember sm = new ServiceMember();
+    MapCoachActivities mapCoachActivities = new MapCoachActivities();
 
     @FXML
-    void add(ActionEvent event) {
+    void add(ActionEvent event) throws SQLException {
+
         // Création d'une instance du service
         ServiceActivity sa = new ServiceActivity();
 
@@ -62,7 +69,6 @@ public class ActivityController {
             // Récupération des données saisies
             String name = nameId.getText();
             String description = descriptionId.getText();
-            int coach = Integer.parseInt(coachId.getText());
             LocalDate date = dateId.getValue();
             int duration = Integer.parseInt(durationId.getText());
             int maxParticipants = Integer.parseInt(maxID.getText());
@@ -77,23 +83,34 @@ public class ActivityController {
                     java.sql.Date.valueOf(date),
                     java.sql.Time.valueOf(hour),
                     duration,
-                    coach
+                    onCoachSelected()
             );
 
-            // Ajout de l'activité dans la base de données
-        try {
-            sa.ajouter(activity);
-            Alert success = new Alert(Alert.AlertType.INFORMATION);
-            success.setTitle("Succès");
-            success.setHeaderText(null);
-            success.setContentText("Activité ajoutée avec succès !");
-            success.showAndWait();
-        } catch (Exception e) {
-            System.out.println(e);
+        if(!mapCoachActivities.isConflit(activity)){
+                // Ajout de l'activité dans la base de données
+            try {
+                sa.ajouter(activity);
+                initialize();
+                clearFields();
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Succès");
+                success.setHeaderText(null);
+                success.setContentText("Activité ajoutée avec succès !");
+                success.showAndWait();
+            } catch (Exception e) {
+                System.out.println(e);
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle("Erreur");
+                error.setHeaderText(null);
+                error.setContentText("Une erreur s'est produite lors de l'ajout de l'activité.");
+                error.showAndWait();
+            }
+        }
+        else {
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle("Erreur");
             error.setHeaderText(null);
-            error.setContentText("Une erreur s'est produite lors de l'ajout de l'activité.");
+            error.setContentText("This Coach has another activity at this time");
             error.showAndWait();
         }
 
@@ -166,7 +183,7 @@ public class ActivityController {
                 // Récupérer les données modifiées du formulaire
                 String name = nameId.getText();
                 String description = descriptionId.getText();
-                int coach = Integer.parseInt(coachId.getText());
+                int coach = onCoachSelected();
                 LocalDate date = dateId.getValue();
                 int duration = Integer.parseInt(durationId.getText());
                 int maxParticipants = Integer.parseInt(maxID.getText());
@@ -212,41 +229,62 @@ public class ActivityController {
         }
     }
     @FXML
-    void initialize(){
+    void initialize() throws SQLException {
         ServiceActivity sera = new ServiceActivity();
+        MemberList ml = new MemberList(sm.getAll());
+
         try {
+            // Fetch coach names
+            List<Member> coaches = ml.getCoaches();
+            if (coaches.isEmpty()) {
+                System.out.println("No coaches found.");
+            }
+            List<String> coachNames = coaches.stream()
+                    .map(coach -> coach.getFirstName() + " " + coach.getLastName())
+                    .toList();
+            ObservableList<String> observableCoachList = FXCollections.observableList(coachNames);
+            listID.setItems(observableCoachList);// Assuming listID is a ListView<String>
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setTitle("Error");
+            error.setHeaderText(null);
+            error.setContentText("Failed to load coaches.");
+            error.showAndWait();
+        }
+
+        try {
+            // Fetch activities
             List<Activity> listA = sera.getAll();
-            ObservableList<Activity> ober = FXCollections.observableList(listA);
-            tableID.setItems(ober);
+            ObservableList<Activity> observableActivityList = FXCollections.observableList(listA);
+            tableID.setItems(observableActivityList); // Assuming tableID is a TableView<Activity>
             nameColumnID.setCellValueFactory(new PropertyValueFactory<>("activityName"));
             dateColumnId.setCellValueFactory(new PropertyValueFactory<>("date"));
             maxColumnId.setCellValueFactory(new PropertyValueFactory<>("maxMembers"));
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
             Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Erreur");
+            error.setTitle("Error");
             error.setHeaderText(null);
-            error.setContentText("Impossible de charger les données.");
+            error.setContentText("Failed to load activities.");
             error.showAndWait();
         }
-
     }
-
-
-    public void loadDataToForm(MouseEvent mouseEvent) {
+    public void loadDataToForm(MouseEvent mouseEvent) throws SQLException {
         // Récupérer l'activité sélectionnée dans la table
         Activity selectedActivity = tableID.getSelectionModel().getSelectedItem();
-
+        MemberList ml = new MemberList(sm.getAll());
         if (selectedActivity != null) {
             // Charger les données dans les champs du formulaire
             nameId.setText(selectedActivity.getActivityName());
             descriptionId.setText(selectedActivity.getDescription());
-            coachId.setText(String.valueOf(selectedActivity.getMemberId()));
+
             java.sql.Date sqlDate = new java.sql.Date(selectedActivity.getDate().getTime());
             dateId.setValue(sqlDate.toLocalDate());
             durationId.setText(String.valueOf(selectedActivity.getDuration()));
             maxID.setText(String.valueOf(selectedActivity.getMaxMembers()));
             hourId.setText(selectedActivity.getHour().toString());
+            listID.setValue(ml.getNameById(selectedActivity.getMemberId()));
         } else {
             Alert warning = new Alert(Alert.AlertType.WARNING);
             warning.setTitle("Attention");
@@ -262,6 +300,28 @@ public class ActivityController {
         hourId.clear();            // Efface l'heure
         durationId.clear();        // Efface la durée
         maxID.clear();             // Efface le nombre max de membres
-        coachId.clear();           // Efface le coach ID
+        listID.setValue("");           // Efface le coach ID
+    }
+    @FXML
+    public int onCoachSelected() throws SQLException {
+
+        MemberList ml = new MemberList(sm.getAll());
+        List<Member> coaches = ml.getCoaches();
+        String selectedCoach = listID.getSelectionModel().getSelectedItem();
+
+        if (selectedCoach == null) {
+            System.out.println("Aucun coach sélectionné.");
+            return -1;
+        }
+        Optional<Member> coachOpt = coaches.stream()
+                .filter(coach -> (coach.getFirstName() + " " + coach.getLastName()).equals(selectedCoach))
+                .findFirst();
+
+        // Si un coach est trouvé, retourne son ID, sinon retourne -1
+        return coachOpt.map(Member::getMemberId).orElseGet(() -> {
+            System.out.println("Coach sélectionné non trouvé dans la liste.");
+            return -1; // Retourne une valeur négative si le coach n'est pas trouvé
+        });
+
     }
 }
