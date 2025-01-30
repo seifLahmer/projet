@@ -21,7 +21,7 @@ public class ServicePayment{
     }
 
     public void ajouter(Payment payment) throws SQLException {
-        String query = "INSERT INTO Payment (PaymentId, MemberId, Amount, PaymentDate, PaymentStatus, AdminId) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Payment (PaymentId, MemberId, Amount, PaymentDate, PaymentStatus, AdminId,abonnementId) VALUES (?, ?, ?, ?, ?, ?,?)";
         PreparedStatement pre = conn.prepareStatement(query);
 
         pre.setInt(1, payment.getPaymentId());
@@ -30,6 +30,7 @@ public class ServicePayment{
         pre.setDate(4, new java.sql.Date(payment.getPaymentDate().getTime()));
         pre.setString(5, payment.getPaymentStatus());
         pre.setInt(6, payment.getAdminId());
+        pre.setInt(7, payment.getPaymentId());
 
         pre.executeUpdate();
         System.out.println("Paiement ajouté avec succès !");
@@ -45,7 +46,7 @@ public class ServicePayment{
     }
 
     public void update(Payment payment) throws SQLException {
-        String query = "UPDATE Payment SET MemberId = ?, Amount = ?, PaymentDate = ?, PaymentStatus = ?, AdminId = ? WHERE PaymentId = ?";
+        String query = "UPDATE Payment SET MemberId = ?, Amount = ?, PaymentDate = ?, PaymentStatus = ?, AdminId = ? WHERE PaymentId =?, abonnementId = ? ";
         PreparedStatement pre = conn.prepareStatement(query);
 
         // Remplissage des paramètres
@@ -53,8 +54,10 @@ public class ServicePayment{
         pre.setDouble(2, payment.getAmount());
         pre.setDate(3, new java.sql.Date(payment.getPaymentDate().getTime()));
         pre.setString(4, payment.getPaymentStatus());
-        pre.setInt(5, payment.getAdminId());
+
         pre.setInt(6, payment.getPaymentId());
+        pre.setInt(7, payment.getAbonnementId());
+
 
         // Exécution de la requête
         pre.executeUpdate();
@@ -73,8 +76,10 @@ public class ServicePayment{
             Date paymentDate = rs.getDate("PaymentDate");
             String paymentStatus = rs.getString("PaymentStatus");
             int adminId = rs.getInt("AdminId");
+             int abonnementId = rs.getInt("AbonnementId")
+                     ;
 
-            Payment payment = new Payment(paymentId, memberId, amount, paymentDate, paymentStatus, adminId);
+            Payment payment = new Payment(paymentId, memberId, amount, paymentDate, paymentStatus,abonnementId,adminId);
             payments.add(payment);
         }
 
@@ -94,6 +99,7 @@ public class ServicePayment{
             Date paymentDate = rs.getDate("PaymentDate");
             String paymentStatus = rs.getString("PaymentStatus");
             int adminId = rs.getInt("AdminId");
+            int  abonnementId = rs.getInt("AbonnementId");
 
             return new Payment(paymentId, memberId, amount, paymentDate, paymentStatus, adminId);
         }
