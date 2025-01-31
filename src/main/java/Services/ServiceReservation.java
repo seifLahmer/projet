@@ -25,7 +25,7 @@ public class ServiceReservation implements IService<Reservation>{
 
     @Override
     public void ajouter(Reservation reservation) throws SQLException {
-        PreparedStatement pre= conn.prepareStatement("INSERT INTO Reservation (memberId,activityId,date) VALUES (?,?,? );");
+        PreparedStatement pre= conn.prepareStatement("INSERT INTO Reservation (memberId,activityId,ReservationDate) VALUES (?,?,? );");
         pre.setInt(1,reservation.getMemberId());
         pre.setInt(2,reservation.getActivityId());
         pre.setDate(3, new java.sql.Date(reservation.getReservationDate().getTime()));

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="1100.0" style="-fx-background-color: #F9F9F9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.EquipmentController">
+    <children>
+        <!-- Sidebar -->
+        <VBox layoutX="10.0" layoutY="10.0" prefWidth="300.0" spacing="15.0" style="-fx-background-color: #3F3F9F; -fx-padding: 15; -fx-background-radius: 10;">
+            <Label text="Ajouter Equipement" textFill="white">
+                <font>
+                    <Font size="20.0" />
+                </font>
+            </Label>
+
+            <Label text="Nom" textFill="white" />
+            <TextField fx:id="txtName" promptText="Enter equipment name" />
+
+            <Label text="Categorie" textFill="white" />
+            <TextField fx:id="txtCategory" promptText="Enter category" />
+
+            <Label text="Quantité" textFill="white" />
+            <TextField fx:id="txtQuantity" promptText="Enter quantity" />
+
+            <Label text="Date d'achat" textFill="white" />
+            <TextField fx:id="txtPurchaseDate" promptText="YYYY-MM-DD" />
+
+            <Label text="Date de la dernière maintenance" textFill="white" />
+            <TextField fx:id="txtMaintenanceDate" promptText="YYYY-MM-DD" />
+
+            <!-- Modification du ComboBox pour les statuts -->
+            <Label text="Statut" textFill="white" />
+            <ComboBox fx:id="comboState" prefHeight="26.0" prefWidth="136.0">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Disponible" />
+                        <String fx:value="En maintenance" />
+                        <String fx:value="Hors service" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+
+            <Button fx:id="btnAdd" onAction="#handleAdd" prefHeight="26.0" prefWidth="262.0" style="-fx-background-color: #E68141; -fx-text-fill: white; -fx-font-weight: bold;" text="Ajouter" />
+        </VBox>
+
+        <!-- Table View -->
+        <TableView fx:id="equipmentTable" layoutX="330.0" layoutY="10.0" prefHeight="630.0" prefWidth="760.0" style="-fx-background-color: white;">
+            <columns>
+                <TableColumn fx:id="colID" prefWidth="60.0" text="ID" />
+                <TableColumn fx:id="colName" prefWidth="150.0" text="Name" />
+                <TableColumn fx:id="colCategory" prefWidth="120.0" text="Category" />
+                <TableColumn fx:id="colQuantity" prefWidth="80.0" text="Quantity" />
+                <TableColumn fx:id="colPurchaseDate" prefWidth="130.0" text="Purchase Date" />
+                <TableColumn fx:id="colMaintenanceDate" prefWidth="130.0" text="Maintenance Date" />
+                <TableColumn fx:id="colState" prefWidth="90.0" text="State" />
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>
