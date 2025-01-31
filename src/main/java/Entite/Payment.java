@@ -9,6 +9,8 @@ public class Payment {
     private Date paymentDate;
     private String paymentStatus;
     private int adminId;
+    private int abonnementId;
+
 
     // Constructeur complet
     public Payment(int paymentId, int memberId, double amount, Date paymentDate, String paymentStatus, int adminId) {
@@ -18,10 +20,12 @@ public class Payment {
         this.paymentDate = paymentDate;
         this.paymentStatus = paymentStatus;
         this.adminId = adminId;
+        this.abonnementId = 0;
+
     }
 
     // Constructeur vide (utile pour certaines opérations)
-    public Payment() {
+    public Payment(int paymentId, int memberId, double amount, Date paymentDate, String paymentStatus, int abonnementId, int adminId) {
     }
 
     // Getters et setters
@@ -64,6 +68,14 @@ public class Payment {
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
+    public void  abonnementId (int abonnementId){
+        this.abonnementId = abonnementId;
+
+    }
+    public int getAbonnementId() {
+        return abonnementId;
+
+    }
 
     public int getAdminId() {
         return adminId;
@@ -83,6 +95,8 @@ public class Payment {
                 ", paymentDate=" + paymentDate +
                 ", paymentStatus='" + paymentStatus + '\'' +
                 ", adminId=" + adminId +
+                ", abonnementId=" + abonnementId +
+
                 '}';
     }
 }
