@@ -1,117 +1,135 @@
 package Services;
 
 import Entite.Equipment;
+import Entite.Etat;
 import Utils.DataSource;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
-public class ServiceEquipement implements IService<Equipment> {
+public class ServiceEquipement {
 
-    private Connection conn = DataSource.getInstance().getCon();
-    private Statement stat = null;
+    private Connection con;
 
     public ServiceEquipement() {
-        try {
-            stat = conn.createStatement();
+        con = DataSource.getInstance().getCon();
+    }
+
+    // Add new equipment
+    public void ajouterEquipement(Equipment equipment) {
+        String query = "INSERT INTO equipement (EquipementID, EquipementName, Category, Quantity, AchatDate, LastMaintenanceDate, etat) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, equipment.getEquipementID());
+            ps.setString(2, equipment.getEquipementName());
+            ps.setString(3, equipment.getCategory());
+            ps.setInt(4, equipment.getQuantity());
+            ps.setDate(5, new java.sql.Date(equipment.getAchatDate().getTime()));
+            ps.setDate(6, new java.sql.Date(equipment.getLastMaintenanceDate().getTime()));
+            ps.setString(7, equipment.getEtat().name()); // Store the enum value as string
+
+            ps.executeUpdate();
+            System.out.println("Equipement ajoute avec succes");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    @Override
-    public void ajouter(Equipment equipment) throws SQLException {
-        PreparedStatement pre = conn.prepareStatement("INSERT INTO equipement (equipementName, category, quantity, achatDate, lastMaintenanceDate, etat) VALUES (?,?,?,?,?,?)");
-        pre.setString(1, equipment.getEquipementName());
-        pre.setString(2, equipment.getCategory());
-        pre.setInt(3, equipment.getQuantity());
-        pre.setDate(4, new java.sql.Date(equipment.getAchatDate().getTime()));
-        pre.setDate(5, new java.sql.Date(equipment.getLastMaintenanceDate().getTime()));
-        pre.setString(6, equipment.getEtat());
+    // Get all equipment
+    public ObservableList<Equipment> getAll() {
+        ObservableList<Equipment> equipments = FXCollections.observableArrayList(); // Use ObservableList
+        String query = "SELECT * FROM equipement";
 
-        pre.executeUpdate();
-        System.out.println("Equipment added successfully!");
-    }
-
-    @Override
-    public void supprimer(Equipment equipment) throws SQLException {
-        PreparedStatement pre = conn.prepareStatement("DELETE FROM equipement WHERE equipementID = ?");
-        pre.setInt(1, equipment.getEquipementID());
-        pre.executeUpdate();
-        System.out.println("Equipment deleted successfully!");
-    }
-
-    @Override
-    public void update(Equipment equipment, Map<String, Object> data) throws SQLException {
-        // Construct the SQL query
-        String query = "UPDATE equipement SET ";
-        query += String.join(" = ?, ", data.keySet()) + " = ? WHERE equipementID = ?";
-
-        // Prepare the query
-        PreparedStatement pre = conn.prepareStatement(query);
-
-        // Add values to the PreparedStatement
-        int index = 1;
-        for (Object value : data.values()) {
-            pre.setObject(index++, value); // setObject simplifies type management
+        try (PreparedStatement ps = con.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Equipment equipment = new Equipment(
+                        rs.getInt("EquipementID"),
+                        rs.getString("EquipementName"),
+                        rs.getString("Category"),
+                        rs.getInt("Quantity"),
+                        rs.getDate("AchatDate"),
+                        rs.getDate("LastMaintenanceDate"),
+                        Etat.valueOf(rs.getString("etat"))
+                );
+                equipments.add(equipment); // Add to ObservableList
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        // Add the equipment ID
-        pre.setInt(index, equipment.getEquipementID());
-
-        // Execute the update
-        pre.executeUpdate();
-        System.out.println("Equipment updated successfully!");
+        return equipments; // Return the ObservableList
     }
 
-    @Override
-    public List<Equipment> getAll() throws SQLException {
-        List<Equipment> list = new ArrayList<>();
+    // Get equipment by ID
+    public Equipment getById(int equipementID) {
+        String query = "SELECT * FROM equipement WHERE EquipementID = ?";
+        Equipment equipment = null;
 
-        ResultSet reset = stat.executeQuery("SELECT * FROM equipement");
-        while (reset.next()) {
-            int equipementID = reset.getInt("equipementID");
-            String equipementName = reset.getString("equipementName");
-            String category = reset.getString("category");
-            int quantity = reset.getInt("quantity");
-            Date achatDate = reset.getDate("achatDate");
-            Date lastMaintenanceDate = reset.getDate("lastMaintenanceDate");
-            String etat = reset.getString("etat");
-
-            Equipment e = new Equipment(equipementID, equipementName, category, quantity, achatDate, lastMaintenanceDate, etat);
-            list.add(e);
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, equipementID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    equipment = new Equipment(
+                            rs.getInt("EquipementID"),
+                            rs.getString("EquipementName"),
+                            rs.getString("Category"),
+                            rs.getInt("Quantity"),
+                            rs.getDate("AchatDate"),
+                            rs.getDate("LastMaintenanceDate"),
+                            Etat.valueOf(rs.getString("etat"))
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return list;
+        return equipment;
     }
 
-    @Override
-    public Equipment getById(int id) throws SQLException {
-        PreparedStatement pre = conn.prepareStatement("SELECT * FROM equipement WHERE equipementID = ?");
-        pre.setInt(1, id);
-        ResultSet reset = pre.executeQuery();
-
-        Equipment e = null; // Initialize the Equipment variable
-
-        if (reset.next()) {
-            int equipementID = reset.getInt("equipementID");
-            String equipementName = reset.getString("equipementName");
-            String category = reset.getString("category");
-            int quantity = reset.getInt("quantity");
-            Date achatDate = reset.getDate("achatDate");
-            Date lastMaintenanceDate = reset.getDate("lastMaintenanceDate");
-            String etat = reset.getString("etat");
-
-            e = new Equipment(equipementID, equipementName, category, quantity, achatDate, lastMaintenanceDate, etat);
-        } else {
-            System.out.println("No equipment found with ID: " + id);
+    // Update equipment details
+    public void update(Equipment newEquipment, Map<String, Object> updateData) {
+        StringBuilder queryBuilder = new StringBuilder("UPDATE equipement SET ");
+        for (String key : updateData.keySet()) {
+            queryBuilder.append(key).append(" = ?, ");
         }
+        queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length()); // Remove the trailing comma
+        queryBuilder.append(" WHERE EquipementID = ?");
 
-        reset.close(); // Close the ResultSet
-        pre.close();   // Close the PreparedStatement
+        try (PreparedStatement ps = con.prepareStatement(queryBuilder.toString())) {
+            int index = 1;
+            for (Object value : updateData.values()) {
+                if (value instanceof String) {
+                    ps.setString(index++, (String) value);
+                } else if (value instanceof Integer) {
+                    ps.setInt(index++, (Integer) value);
+                } else if (value instanceof Date) {
+                    ps.setDate(index++, (Date) value);
+                } else if (value instanceof Etat) {
+                    ps.setString(index++, ((Etat) value).name());
+                }
+            }
+            ps.setInt(index, newEquipment.getEquipementID()); // Set the ID for the WHERE clause
 
-        return e; // Return the Equipment object or null if not found
+            ps.executeUpdate();
+            System.out.println("Equipement mis à jour avec succès");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    // Delete equipment
+    public void supprimer(Equipment equipment) {
+        String query = "DELETE FROM equipement WHERE EquipementID = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, equipment.getEquipementID());
+            ps.executeUpdate();
+            System.out.println("Equipement supprimé avec succès");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Other helper methods can be added as needed.
 }

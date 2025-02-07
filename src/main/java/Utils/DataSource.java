@@ -14,7 +14,7 @@ public class DataSource {
     private DataSource() {
         try {
             conn=DriverManager.getConnection(url,user,password);
-            System.out.println("connexion établie");
+            System.out.println("connexion etablie");
         } catch (SQLException e) {
             System.out.println(e);
         }

@@ -8,13 +8,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static Entite.Etat.Disponible;
+
 public class Test {
     public static void main(String[] args) throws SQLException {
         ServiceEquipement service = new ServiceEquipement();
 
         // 1. Adding a new equipment
-        Equipment newEquipment = new Equipment(0, "Laptop", "Electronics", 10, new Date(), new Date(), "Good");
-        service.ajouter(newEquipment);  // This will print "Equipment added successfully!"
+        Equipment newEquipment = new Equipment(0, "Leg press", "Legs", 10, new Date(), new Date(), Disponible);
+        service.ajouterEquipement(newEquipment);  // This will print "Equipment added successfully!"
 
         // Fetch the equipment ID after insertion
         List<Equipment> allEquipment = service.getAll();
@@ -42,7 +44,7 @@ public class Test {
         // 4. Updating the equipment (Change name and quantity)
         System.out.println("\nUpdating Equipment:");
         Map<String, Object> updateData = Map.of(
-                "equipementName", "Updated Laptop",
+                "equipementName", "Updated machine",
                 "quantity", 5
         );
         service.update(newEquipment, updateData);  // This will print "Equipment updated successfully!"

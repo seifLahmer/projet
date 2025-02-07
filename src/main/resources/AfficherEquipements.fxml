@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1100.0" style="-fx-background-color: #F9F9F9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficherEquipementsController">
-    <children>
-        <!-- Table View to display equipments -->
-        <TableView fx:id="equipmentTable" layoutX="10.0" layoutY="10.0" prefHeight="600.0" prefWidth="1060.0" style="-fx-background-color: white;">
-            <columns>
-                <TableColumn fx:id="colID" prefWidth="60.0" text="ID" />
-                <TableColumn fx:id="colName" prefWidth="150.0" text="Name" />
-                <TableColumn fx:id="colCategory" prefWidth="120.0" text="Category" />
-                <TableColumn fx:id="colQuantity" prefWidth="100.0" text="Quantity" />
-                <TableColumn fx:id="colPurchaseDate" prefWidth="130.0" text="Purchase Date" />
-                <TableColumn fx:id="colMaintenanceDate" prefWidth="130.0" text="Maintenance Date" />
-                <TableColumn fx:id="colState" prefWidth="120.0" text="State" />
-            </columns>
-        </TableView>
-    </children>
+<AnchorPane prefHeight="616.0" prefWidth="854.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficherEquipementsController">
+    <TableView fx:id="equipementsTable" layoutX="14.0" layoutY="14.0" prefHeight="318.0" prefWidth="830.0">
+        <columns>
+            <TableColumn fx:id="idColumn" prefWidth="56.7999849319458" text="ID" />
+            <TableColumn fx:id="nameColumn" prefWidth="172.80001831054688" text="Name" />
+            <TableColumn fx:id="categoryColumn" prefWidth="124.80000305175781" text="Category" />
+            <TableColumn fx:id="quantityColumn" prefWidth="86.4000244140625" text="Quantity" />
+            <TableColumn fx:id="etatColumn" prefWidth="142.39996337890625" text="Etat" />
+            <TableColumn fx:id="actionColumn" prefWidth="246.39996337890625" text="Actions" />
+        </columns>
+    </TableView>
+    <Button fx:id="refreshButton" layoutX="412.0" layoutY="352.0" mnemonicParsing="false" onAction="#refreshEquipements" text="Refresh" />
 </AnchorPane>

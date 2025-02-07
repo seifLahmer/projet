@@ -1,6 +1,6 @@
 package Entite;
-import java.util.Date;
 
+import java.util.Date;
 
 public class Equipment {
     private int equipementID;
@@ -9,9 +9,10 @@ public class Equipment {
     private int quantity;
     private Date achatDate;
     private Date lastMaintenanceDate;
-    private String etat;
+    private Etat etat; // Change to Etat enum
 
-    public Equipment(int equipementID, String equipementName, String category, int quantity, Date achatDate, Date lastMaintenanceDate, String etat) {
+    // Constructor
+    public Equipment(int equipementID, String equipementName, String category, int quantity, Date achatDate, Date lastMaintenanceDate, Etat etat) {
         this.equipementID = equipementID;
         this.equipementName = equipementName;
         this.category = category;
@@ -21,6 +22,10 @@ public class Equipment {
         this.etat = etat;
     }
 
+    public Equipment(int equipementID, String equipementName, String category, int quantity, Date achatDate, Date lastMaintenanceDate, String etat) {
+    }
+
+    // Getters and Setters
     public int getEquipementID() {
         return equipementID;
     }
@@ -69,11 +74,11 @@ public class Equipment {
         this.lastMaintenanceDate = lastMaintenanceDate;
     }
 
-    public String getEtat() {
+    public Etat getEtat() {
         return etat;
     }
 
-    public void setEtat(String etat) {
+    public void setEtat(Etat etat) {
         this.etat = etat;
     }
 
@@ -86,8 +91,7 @@ public class Equipment {
                 ", quantity=" + quantity +
                 ", achatDate=" + achatDate +
                 ", lastMaintenanceDate=" + lastMaintenanceDate +
-                ", etat='" + etat + '\'' +
+                ", etat=" + etat +
                 '}';
     }
 }
-
