@@ -2,6 +2,8 @@ package Controllers;
 
 import Entite.Product;
 import Services.ServiceProduct;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +13,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import Services.StripePaymentService;
+
+import javax.swing.*;
 
 public class AdherentProductController {
 
@@ -115,24 +120,44 @@ public class AdherentProductController {
         }
     }
 
-    @FXML
-    void pay() {
-        if (totalAmount > 0) {
-            showAlert(Alert.AlertType.INFORMATION, "Paiement", "Paiement de " + totalAmount + " effectué avec succès !");
-            cartItems.clear(); // Vider le panier
-            totalAmount = 0.0;
-            totalLabel.setText("0.0");
-            cartTable.refresh();
-        } else {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Aucun produit dans le panier.");
-        }
-    }
+
 
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.showAndWait();
+        alert.showAndWait();}
+    @FXML
+    void pay() {
+        if (totalAmount > 0) {
+            StripePaymentService paymentService = new StripePaymentService();
+            try {
+                PaymentIntent paymentIntent = paymentService.createPayment(totalAmount);
+                showAlert(Alert.AlertType.INFORMATION, "Paiement réussi",
+                        "Paiement de " + totalAmount + "€ effectué avec succès.\nID de transaction : " + paymentIntent.getId());
+
+                // Réinitialiser le panier
+                cartItems.clear();
+                totalAmount = 0.0;
+                totalLabel.setText("0.0");
+                cartTable.refresh();
+            } catch (StripeException e) {
+                showAlert(Alert.AlertType.ERROR, "Échec du paiement", "Erreur : " + e.getMessage());
+            }
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Attention", "Aucun produit dans le panier.");
+        }
     }
+
+
+    @FXML
+    private TextField cardNumberField;
+
+    @FXML
+    private TextField expiryDateField;
+
+    @FXML
+    private TextField cvcField;
+
 }
