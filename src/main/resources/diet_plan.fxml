@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="553.0" prefWidth="730.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DietPlanController">
+    <VBox layoutX="20.0" layoutY="20.0" spacing="10.0">
+        <Label text="Ajouter un Plan de Régime" textFill="#393969">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+
+        <Label text="Member ID" />
+        <TextField fx:id="txtMemberID" />
+
+        <Label text="Aliment" />
+        <ComboBox fx:id="comboFood" />
+
+        <Label text="Servings" />
+        <TextField fx:id="txtServings" />
+
+        <Label text="Meal Time" />
+        <ComboBox fx:id="comboMealTime" />
+
+        <Button onAction="#addDietPlan" style="-fx-background-color: #E68141; -fx-text-fill: white;" text="Ajouter Plan" />
+
+        <TableView fx:id="dietPlanTable" prefHeight="200.0" prefWidth="690.0">
+            <columns>
+                <TableColumn prefWidth="112.8" text="DietPlanID" />
+                <TableColumn prefWidth="154.4" text="Member Name" />
+                <TableColumn prefWidth="128.0" text="Food Name" />
+                <TableColumn prefWidth="98.4" text="Servings" />
+                <TableColumn prefWidth="109.6" text="Meal Time" />
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

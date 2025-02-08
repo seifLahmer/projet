@@ -1,7 +1,12 @@
 package Test;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class Main extends Application {
 
@@ -10,7 +15,22 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
+        // Charger la première interface (AjouterCalorie.fxml)
+        FXMLLoader calorieLoader = new FXMLLoader(getClass().getResource("/AjouterCalorie.fxml"));
+        Parent calorieRoot = calorieLoader.load();
+        Scene calorieScene = new Scene(calorieRoot);
+        primaryStage.setTitle("Ajouter Calorie");
+        primaryStage.setScene(calorieScene);
+        primaryStage.show();
 
+        // Charger la deuxième interface (diet_plan.fxml) dans une nouvelle fenêtre
+        FXMLLoader dietPlanLoader = new FXMLLoader(getClass().getResource("/diet_plan.fxml"));
+        Parent dietPlanRoot = dietPlanLoader.load();
+        Scene dietPlanScene = new Scene(dietPlanRoot);
+        Stage dietPlanStage = new Stage();
+        dietPlanStage.setTitle("Plan de Régime");
+        dietPlanStage.setScene(dietPlanScene);
+        dietPlanStage.show();
     }
 }
