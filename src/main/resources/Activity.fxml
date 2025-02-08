@@ -1,47 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ActivityController">
+<AnchorPane prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ActivityController" style="-fx-background-color: #F4F4F4;">
     <children>
-        <!-- Labels -->
-        <Label layoutX="20.0" layoutY="40.0" text="Activity Name" />
-        <Label layoutX="20.0" layoutY="90.0" text="Description" />
-        <Label layoutX="20.0" layoutY="150.0" text="Date" />
-        <Label layoutX="20.0" layoutY="200.0" text="Hour" />
-        <Label layoutX="20.0" layoutY="250.0" text="Duration (min)" />
-        <Label layoutX="20.0" layoutY="300.0" text="Max Members" />
-        <Label layoutX="20.0" layoutY="350.0" text="Coach Name" />
+        <!-- Panneau latéral -->
+        <VBox layoutX="0.0" layoutY="0.0" prefWidth="250.0" prefHeight="600.0" style="-fx-background-color: #2F2F5A; -fx-padding: 20;">
+            <children>
+                <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="85.0" layoutY="30.0" />
+                <Label text="Nom d’utilisateur" textFill="WHITE" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10;" />
+                <Button text="Activités planning" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-text-fill: #2F2F5A; -fx-font-size: 16px; -fx-padding: 12; -fx-background-radius: 5;" />
+                <Button text="List of activités" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-text-fill: #2F2F5A; -fx-font-size: 16px; -fx-padding: 12; -fx-background-radius: 5;" />
+                <Button text="Logout" prefWidth="200.0" style="-fx-background-color: #B22222; -fx-text-fill: WHITE; -fx-font-size: 16px; -fx-padding: 12; -fx-background-radius: 5;" />
+            </children>
+        </VBox>
 
-        <!-- Input Fields -->
-        <TextField fx:id="nameId" layoutX="122.0" layoutY="35.0" prefWidth="200.0" />
-        <TextArea fx:id="descriptionId" layoutX="122.0" layoutY="85.0" prefHeight="50.0" prefWidth="200.0" />
-        <DatePicker fx:id="dateId" layoutX="122.0" layoutY="145.0" prefWidth="200.0" />
-        <TextField fx:id="hourId" layoutX="122.0" layoutY="195.0" prefWidth="200.0" />
-        <TextField fx:id="durationId" layoutX="122.0" layoutY="245.0" prefWidth="200.0" />
-        <TextField fx:id="maxID" layoutX="122.0" layoutY="295.0" prefWidth="200.0" />
+        <!-- Formulaire de saisie -->
+        <VBox layoutX="270.0" layoutY="30.0" spacing="15.0" prefWidth="350.0" prefHeight="500.0" style="-fx-padding: 20; -fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <children>
+                <HBox spacing="10">
+                    <Label text="Activity Name:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                    <TextField fx:id="nameId" prefWidth="200.0" style="-fx-background-radius: 5;" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Description:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                    <TextArea fx:id="descriptionId" prefWidth="280.0" prefHeight="80.0" style="-fx-background-radius: 5;" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Date:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                    <DatePicker fx:id="dateId" prefWidth="180.0" style="-fx-background-radius: 5;" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Hour:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                    <TextField fx:id="hourId" prefWidth="120.0" style="-fx-background-radius: 5;" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Duration (min):" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                    <TextField fx:id="durationId" prefWidth="120.0" style="-fx-background-radius: 5;" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Max members:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                    <TextField fx:id="maxID" prefWidth="120.0" style="-fx-background-radius: 5;" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Coach Name:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                    <ComboBox fx:id="listID" prefWidth="220.0" style="-fx-background-radius: 5;" />
+                </HBox>
+            </children>
+        </VBox>
 
-        <!-- Buttons -->
-        <Button layoutX="368.0" layoutY="350.0" mnemonicParsing="false" onAction="#add" text="Add" />
-        <Button layoutX="438.0" layoutY="350.0" mnemonicParsing="false" onAction="#update" text="Update" />
-        <Button layoutX="508.0" layoutY="350.0" mnemonicParsing="false" onAction="#delete" text="Delete" />
+        <!-- Tableau des activités -->
+        <TableView fx:id="tableID" layoutX="650.0" layoutY="30.0" onMouseClicked="#loadDataToForm" prefHeight="500.0" prefWidth="400.0" style="-fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <columns>
+                <TableColumn fx:id="nameColumnID" text="Activity Name" prefWidth="150.0" style="-fx-font-weight: bold;" />
+                <TableColumn fx:id="dateColumnId" text="Date" prefWidth="130.0" style="-fx-font-weight: bold;" />
+                <TableColumn fx:id="maxColumnId" text="Max Members" prefWidth="120.0" style="-fx-font-weight: bold;" />
+            </columns>
+        </TableView>
 
-        <TableView fx:id="tableID" layoutX="350.0" layoutY="35.0" onMouseClicked="#loadDataToForm" prefHeight="302.0" prefWidth="230.0">
-        <columns>
-            <TableColumn fx:id="nameColumnID" prefWidth="80.79998779296875" text="Activity Name" />
-          <TableColumn fx:id="dateColumnId" prefWidth="72.0" text="Date" />
-          <TableColumn fx:id="maxColumnId" prefWidth="75.2000732421875" text="Max members" />
-        </columns>
-      </TableView>
-      <ComboBox fx:id="listID" layoutX="135.0" layoutY="347.0" prefWidth="150.0" onMouseClicked="#onCoachSelected"/>
-
+        <!-- Boutons d'action -->
+        <HBox layoutX="650.0" layoutY="550.0" spacing="15">
+            <children>
+                <Button text="Add" onAction="#add" style="-fx-background-color: #2F2F5A; -fx-text-fill: WHITE; -fx-font-size: 16px; -fx-padding: 10; -fx-background-radius: 5;" />
+                <Button text="Update" onAction="#update" style="-fx-background-color: #2F2F5A; -fx-text-fill: WHITE; -fx-font-size: 16px; -fx-padding: 10; -fx-background-radius: 5;" />
+                <Button text="Delete" onAction="#delete" style="-fx-background-color: #B22222; -fx-text-fill: WHITE; -fx-font-size: 16px; -fx-padding: 10; -fx-background-radius: 5;" />
+            </children>
+        </HBox>
     </children>
 </AnchorPane>

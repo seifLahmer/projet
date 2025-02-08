@@ -16,8 +16,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Reservation.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/Activity.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdherentProductView.fxml"));
         Parent root = null;
         try {
             root = loader.load();
