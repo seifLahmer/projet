@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="618.0" prefWidth="1067.0" style="-fx-background-color: #FFFFF0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AddFoodController">
+    <children>
+        <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#393969" height="597.0" layoutX="8.0" layoutY="9.0" stroke="#DFDBD7" strokeWidth="2.0" width="315.0" />
+
+        <Label layoutX="70.0" layoutY="124.0" text="Ajouter Aliment" textFill="#FFFFF0">
+            <font>
+                <Font size="25.0" />
+            </font>
+        </Label>
+
+        <VBox layoutX="14.0" layoutY="176.0" spacing="10.0">
+            <Label text="Nom de l'Aliment" textFill="#FFFFF0" />
+            <TextField fx:id="txtFoodName" />
+
+            <Label text="Calories par Portion" textFill="#FFFFF0" />
+            <TextField fx:id="txtCalories" />
+
+            <Label text="Catégorie" textFill="#FFFFF0" />
+            <ComboBox fx:id="comboCategory">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Petit-déjeuner" />
+                        <String fx:value="Déjeuner" />
+                        <String fx:value="Dîner" />
+                        <String fx:value="Collation" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <Button layoutX="103.0" layoutY="412.0" mnemonicParsing="false" onAction="#addFood" style="-fx-background-color: #E68141; -fx-text-fill: white; -fx-font-weight: bold;" text="Ajouter Aliment" />
+
+        <TableView fx:id="foodTable" layoutX="350.0" layoutY="70.0" prefHeight="380.0" prefWidth="670.0" style="-fx-background-color: #DFDBD7; -fx-border-color: #393969;">
+            <columns>
+                <TableColumn fx:id="foodNameCol" text="Nom de l'Aliment" />
+                <TableColumn fx:id="caloriesCol" text="Calories par Portion" />
+                <TableColumn fx:id="categoryCol" text="Catégorie" />
+                <TableColumn fx:id="actionCol" text="Actions" />
+            </columns>
+        </TableView>
+
+        <ImageView fitHeight="83.0" fitWidth="102.0" layoutX="114.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@images/logo.png" />
+            </image>
+        </ImageView>
+    </children>
+</AnchorPane>
