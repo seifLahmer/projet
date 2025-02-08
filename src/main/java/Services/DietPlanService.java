@@ -37,6 +37,21 @@ public class DietPlanService {
         return foods;
     }
 
+    // Get last calorie needs for a member
+    public double getLastCalorieNeeds(int memberID) throws SQLException {
+        double calorieNeeds = 0.0;
+        String query = "SELECT calorie_needs FROM usercalorieprofiles WHERE MemberID = ? ORDER BY updated_at DESC LIMIT 1"; // Adjust query as per your table structure
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, memberID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    calorieNeeds = rs.getDouble("calorie_needs");
+                }
+            }
+        }
+        return calorieNeeds;
+    }
+
     // Add a diet plan
     public void addDietPlan(UserDietPlan dietPlan) throws SQLException {
         String query = "INSERT INTO user_diet_plans (MemberID, FoodID, Servings, MealTime) VALUES (?, ?, ?, ?)";
@@ -116,4 +131,45 @@ public class DietPlanService {
         }
         return null; // or handle accordingly
     }
+
+    // Get total calories for a member
+    public double getTotalCaloriesByMember(int memberID) throws SQLException {
+        double totalCalories = 0.0;
+        String query = "SELECT SUM(Foods.CaloriesPerServing * UserDietPlans.Servings) AS TotalCalories " +
+                "FROM user_diet_plans AS UserDietPlans " +
+                "JOIN foods AS Foods ON UserDietPlans.FoodID = Foods.FoodID " +
+                "WHERE UserDietPlans.MemberID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, memberID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    totalCalories = rs.getDouble("TotalCalories");
+                }
+            }
+        }
+        return totalCalories;
+    }
+
+    // Add this method to your existing DietPlanService class
+    public void addFood(Food food) throws SQLException {
+        String query = "INSERT INTO foods (FoodName, CaloriesPerServing, Category) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, food.getFoodName());
+            pstmt.setDouble(2, food.getCaloriesPerServing());
+            pstmt.setString(3, food.getCategory());
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void deleteFood(int foodID) throws SQLException {
+        String query = "DELETE FROM foods WHERE FoodID = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, foodID);
+            pstmt.executeUpdate();
+        }
+    }
+
+
 }
+

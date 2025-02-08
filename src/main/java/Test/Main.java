@@ -32,5 +32,14 @@ public class Main extends Application {
         dietPlanStage.setTitle("Plan de Régime");
         dietPlanStage.setScene(dietPlanScene);
         dietPlanStage.show();
+
+        // Charger la troisième interface (AddFood.fxml) dans une nouvelle fenêtre
+        FXMLLoader addFoodLoader = new FXMLLoader(getClass().getResource("/AddFood.fxml"));
+        Parent addFoodRoot = addFoodLoader.load();
+        Scene addFoodScene = new Scene(addFoodRoot);
+        Stage addFoodStage = new Stage();
+        addFoodStage.setTitle("Ajouter Aliment");
+        addFoodStage.setScene(addFoodScene);
+        addFoodStage.show();
     }
 }

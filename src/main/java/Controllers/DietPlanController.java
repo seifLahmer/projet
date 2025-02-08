@@ -4,15 +4,11 @@ import Entite.Food;
 import Entite.UserDietPlan;
 import Services.DietPlanService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -29,6 +25,12 @@ public class DietPlanController {
     private ComboBox<String> comboMealTime;
     @FXML
     private TableView<UserDietPlan> dietPlanTable;
+    @FXML
+    private Label lblMemberName;
+    @FXML
+    private Label lblCalorieNeeds;
+    @FXML
+    private Label lblTotalCalories; // Add label for displaying total calories
 
     private DietPlanService dietPlanService;
 
@@ -46,6 +48,36 @@ public class DietPlanController {
         } catch (SQLException e) {
             showAlert("Erreur", "Impossible de charger les aliments : " + e.getMessage());
         }
+
+        // Add listener for Member ID TextField
+        txtMemberID.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.isEmpty()) {
+                    try {
+                        int memberID = Integer.parseInt(newValue);
+                        String memberName = dietPlanService.getMemberName(memberID);
+                        lblMemberName.setText(memberName != null ? memberName : "Member not found");
+
+                        // Fetch and display the last calorie need for the member
+                        double calorieNeeds = dietPlanService.getLastCalorieNeeds(memberID);
+                        lblCalorieNeeds.setText(String.valueOf(calorieNeeds));
+
+                        // Calculate total calories whenever member ID changes
+                        updateTotalCalories(memberID);
+                    } catch (NumberFormatException e) {
+                        lblMemberName.setText(""); // Clear if not a valid number
+                        lblCalorieNeeds.setText(""); // Clear calorie needs
+                    } catch (SQLException e) {
+                        showAlert("Erreur", "Unable to fetch member name or calorie needs: " + e.getMessage());
+                    }
+                } else {
+                    lblMemberName.setText(""); // Clear if input is empty
+                    lblCalorieNeeds.setText(""); // Clear calorie needs
+                    lblTotalCalories.setText("0"); // Reset total calories
+                }
+            }
+        });
 
         // Initialize TableView
         dietPlanTable.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("dietPlanID"));
@@ -86,6 +118,15 @@ public class DietPlanController {
         dietPlanTable.getColumns().add(colBtn);
     }
 
+    private void updateTotalCalories(int memberID) {
+        try {
+            double totalCalories = dietPlanService.getTotalCaloriesByMember(memberID);
+            lblTotalCalories.setText(String.valueOf(totalCalories));
+        } catch (SQLException e) {
+            showAlert("Erreur", "Unable to calculate total calories: " + e.getMessage());
+        }
+    }
+
     @FXML
     private void addDietPlan() {
         try {
@@ -103,8 +144,9 @@ public class DietPlanController {
             UserDietPlan dietPlan = new UserDietPlan(0, memberID, memberName, selectedFood.getFoodID(), selectedFood.getFoodName(), servings, mealTime);
             dietPlanService.addDietPlan(dietPlan);
 
-            // Refresh TableView
+            // Refresh TableView and update total calories
             loadDietPlans(memberID);
+            updateTotalCalories(memberID); // Update total calories after adding a new diet plan
 
         } catch (NumberFormatException e) {
             showAlert("Erreur", "Veuillez entrer des valeurs numériques valides pour MemberID et Servings.");
@@ -127,6 +169,7 @@ public class DietPlanController {
         try {
             dietPlanService.deleteDietPlan(dietPlan.getDietPlanID());
             loadDietPlans(Integer.parseInt(txtMemberID.getText())); // Refresh the table
+            updateTotalCalories(Integer.parseInt(txtMemberID.getText())); // Update total calories after deletion
         } catch (SQLException e) {
             showAlert("Erreur de Base de Données", "Impossible de supprimer le plan de régime : " + e.getMessage());
         }

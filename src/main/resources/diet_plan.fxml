@@ -21,6 +21,12 @@
         <Label text="Member ID" />
         <TextField fx:id="txtMemberID" />
 
+        <Label text="Member Name:" />
+        <Label fx:id="lblMemberName" text="" />
+
+        <Label text="Calorie Needs:" />  <!-- New Label for Calorie Needs -->
+        <Label fx:id="lblCalorieNeeds" text="" />
+
         <Label text="Aliment" />
         <ComboBox fx:id="comboFood" />
 
@@ -29,6 +35,9 @@
 
         <Label text="Meal Time" />
         <ComboBox fx:id="comboMealTime" />
+
+        <Label text="Total Calories:" />
+        <Label fx:id="lblTotalCalories" text="0" />
 
         <Button onAction="#addDietPlan" style="-fx-background-color: #E68141; -fx-text-fill: white;" text="Ajouter Plan" />
 
