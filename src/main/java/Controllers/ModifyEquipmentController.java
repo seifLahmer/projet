@@ -1,4 +1,5 @@
 package Controllers;
+
 import Entite.Equipment;
 import Entite.Etat;
 import javafx.fxml.FXML;
@@ -13,8 +14,6 @@ import java.util.Date;
 
 public class ModifyEquipmentController {
 
-    @FXML
-    private TextField idField;
     @FXML
     private TextField nameField;
     @FXML
@@ -36,8 +35,7 @@ public class ModifyEquipmentController {
     public void setEquipmentData(Equipment equipment) {
         this.currentEquipment = equipment;
 
-        // Populate the fields with the current equipment data
-        idField.setText(String.valueOf(equipment.getEquipementID())); // EquipementID is not editable
+        // Populate the fields with the current equipment data (excluding id)
         nameField.setText(equipment.getEquipementName());
         categoryField.setText(equipment.getCategory());
         quantityField.setText(String.valueOf(equipment.getQuantity()));

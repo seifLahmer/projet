@@ -16,6 +16,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.text.SimpleDateFormat;
+
 public class AfficherEquipementsController {
 
     @FXML
@@ -34,6 +36,11 @@ public class AfficherEquipementsController {
     private TableColumn<Equipment, Integer> quantityColumn;
 
     @FXML
+    private TableColumn<Equipment, String> achatDateColumn; // New column for Achat Date
+
+    @FXML
+    private TableColumn<Equipment, String> maintenanceDateColumn;
+    @FXML
     private TableColumn<Equipment, String> etatColumn;
 
     @FXML
@@ -49,7 +56,16 @@ public class AfficherEquipementsController {
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         etatColumn.setCellValueFactory(new PropertyValueFactory<>("etat"));
+// Bind the Achat Date and Maintenance Date columns
+        achatDateColumn.setCellValueFactory(cellData -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return new javafx.beans.property.SimpleStringProperty(dateFormat.format(cellData.getValue().getAchatDate()));
+        });
 
+        maintenanceDateColumn.setCellValueFactory(cellData -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return new javafx.beans.property.SimpleStringProperty(dateFormat.format(cellData.getValue().getLastMaintenanceDate()));
+        });
         // Set up the cell factory for the action column (buttons)
         actionColumn.setCellFactory(new Callback<TableColumn<Equipment, Void>, TableCell<Equipment, Void>>() {
             @Override

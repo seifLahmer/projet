@@ -12,6 +12,8 @@
             <TableColumn fx:id="nameColumn" prefWidth="172.80001831054688" text="Nom" />
             <TableColumn fx:id="categoryColumn" prefWidth="124.80000305175781" text="Categorie" />
             <TableColumn fx:id="quantityColumn" prefWidth="86.4000244140625" text="Quantité" />
+            <TableColumn fx:id="achatDateColumn" prefWidth="142.39996337890625" text="Achat Date" />
+            <TableColumn fx:id="maintenanceDateColumn" prefWidth="142.39996337890625" text="Maintenance Date" />
             <TableColumn fx:id="etatColumn" prefWidth="142.39996337890625" text="Etat" />
             <TableColumn fx:id="actionColumn" prefWidth="246.39996337890625" text="Actions" />
         </columns>
