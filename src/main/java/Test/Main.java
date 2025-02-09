@@ -15,19 +15,31 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
-        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/Activity.fxml"));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Reservation.fxml"));
-        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/activites_reservees.fxml"));
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Scene scene = new Scene(root);
-        stage.setTitle("Ajouter");
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage primaryStage) throws IOException {
+        // Charger la première interface (AjouterCalorie.fxml)
+        FXMLLoader calorieLoader = new FXMLLoader(getClass().getResource("/AjouterCalorie.fxml"));
+        Parent calorieRoot = calorieLoader.load();
+        Scene calorieScene = new Scene(calorieRoot);
+        primaryStage.setTitle("Ajouter Calorie");
+        primaryStage.setScene(calorieScene);
+        primaryStage.show();
+
+        // Charger la deuxième interface (diet_plan.fxml) dans une nouvelle fenêtre
+        FXMLLoader dietPlanLoader = new FXMLLoader(getClass().getResource("/diet_plan.fxml"));
+        Parent dietPlanRoot = dietPlanLoader.load();
+        Scene dietPlanScene = new Scene(dietPlanRoot);
+        Stage dietPlanStage = new Stage();
+        dietPlanStage.setTitle("Plan de Régime");
+        dietPlanStage.setScene(dietPlanScene);
+        dietPlanStage.show();
+
+        // Charger la troisième interface (AddFood.fxml) dans une nouvelle fenêtre
+        FXMLLoader addFoodLoader = new FXMLLoader(getClass().getResource("/AddFood.fxml"));
+        Parent addFoodRoot = addFoodLoader.load();
+        Scene addFoodScene = new Scene(addFoodRoot);
+        Stage addFoodStage = new Stage();
+        addFoodStage.setTitle("Ajouter Aliment");
+        addFoodStage.setScene(addFoodScene);
+        addFoodStage.show();
     }
-    }
+}
