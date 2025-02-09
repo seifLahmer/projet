@@ -2,103 +2,132 @@ package Services;
 
 import Entite.Maintenance;
 import Utils.DataSource;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-public class MaintenanceService implements IService<Maintenance> {
+public class MaintenanceService {
 
-    private Connection conn = DataSource.getInstance().getCon();
-    private Statement stat = null;
+    private Connection con;
 
     public MaintenanceService() {
-        try {
-            stat = conn.createStatement();
+        con = DataSource.getInstance().getCon();
+    }
+
+    // Add new maintenance record
+    public void ajouterMaintenance(Maintenance maintenance) {
+        String query = "INSERT INTO maintenance (EquipementID, MaintenanceDate, Description, Cout, EffectuePar) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, maintenance.getEquipementId());
+            ps.setDate(2, new java.sql.Date(maintenance.getMaintenanceDate().getTime()));
+            ps.setString(3, maintenance.getDescription());
+            ps.setDouble(4, maintenance.getCout());
+            ps.setString(5, maintenance.getEffectuePar());
+
+            ps.executeUpdate();
+            System.out.println("Maintenance added successfully");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    @Override
-    public void ajouter(Maintenance maintenance) throws SQLException {
-        PreparedStatement pre = conn.prepareStatement("INSERT INTO maintenance (EquipementId, MaintenanceDate) VALUES (?, ?)");
-        pre.setInt(1, maintenance.getEquipementId());
-        pre.setDate(2, maintenance.getMaintenanceDate());
+    // Get all maintenance records
+    public ObservableList<Maintenance> getAll() {
+        ObservableList<Maintenance> maintenances = FXCollections.observableArrayList();
+        String query = "SELECT * FROM maintenance";
 
-        pre.executeUpdate();
-        System.out.println("Maintenance added successfully!");
-    }
+        try (PreparedStatement ps = con.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                // Retrieve additional data from ResultSet
+                double cout = rs.getDouble("Cout");
+                String effectuePar = rs.getString("EffectuePar");
 
-    @Override
-    public void supprimer(Maintenance maintenance) throws SQLException {
-        PreparedStatement pre = conn.prepareStatement("DELETE FROM maintenance WHERE MaintenanceId = ?");
-        pre.setInt(1, maintenance.getMaintenanceId());
-        pre.executeUpdate();
-        System.out.println("Maintenance deleted successfully!");
-    }
-
-    @Override
-    public void update(Maintenance maintenance, Map<String, Object> data) throws SQLException {
-        // Construct the SQL query
-        String query = "UPDATE maintenance SET ";
-        query += String.join(" = ?, ", data.keySet()) + " = ? WHERE MaintenanceId = ?";
-
-        // Prepare the query
-        PreparedStatement pre = conn.prepareStatement(query);
-
-        // Add values to the PreparedStatement
-        int index = 1;
-        for (Object value : data.values()) {
-            pre.setObject(index++, value); // setObject simplifies type management
+                Maintenance maintenance = new Maintenance(
+                        rs.getInt("MaintenanceID"),
+                        rs.getInt("EquipementID"),
+                        rs.getDate("MaintenanceDate"),
+                        rs.getString("Description"),
+                        cout, // Pass the 'cout'
+                        effectuePar // Pass the 'effectuePar'
+                );
+                maintenances.add(maintenance);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        // Add the MaintenanceId
-        pre.setInt(index, maintenance.getMaintenanceId());
-
-        // Execute the update
-        pre.executeUpdate();
-        System.out.println("Maintenance updated successfully!");
+        return maintenances;
     }
 
-    @Override
-    public List<Maintenance> getAll() throws SQLException {
-        List<Maintenance> list = new ArrayList<>();
+    // Get maintenance by ID
+    public Maintenance getById(int maintenanceID) {
+        String query = "SELECT * FROM maintenance WHERE MaintenanceID = ?";
+        Maintenance maintenance = null;
 
-        ResultSet reset = stat.executeQuery("SELECT * FROM maintenance");
-        while (reset.next()) {
-            int maintenanceId = reset.getInt("MaintenanceId");
-            int equipementId = reset.getInt("EquipementId");
-            Date maintenanceDate = reset.getDate("MaintenanceDate");
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, maintenanceID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double cout = rs.getDouble("Cout");
+                    String effectuePar = rs.getString("EffectuePar");
 
-            Maintenance m = new Maintenance(maintenanceId, equipementId, maintenanceDate);
-            list.add(m);
+                    maintenance = new Maintenance(
+                            rs.getInt("MaintenanceID"),
+                            rs.getInt("EquipementID"),
+                            rs.getDate("MaintenanceDate"),
+                            rs.getString("Description"),
+                            cout, // Pass the 'cout'
+                            effectuePar // Pass the 'effectuePar'
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return list;
+        return maintenance;
     }
 
-    @Override
-    public Maintenance getById(int id) throws SQLException {
-        PreparedStatement pre = conn.prepareStatement("SELECT * FROM maintenance WHERE MaintenanceId = ?");
-        pre.setInt(1, id);
-        ResultSet reset = pre.executeQuery();
-
-        Maintenance m = null; // Initialize the Maintenance variable
-
-        if (reset.next()) {
-            int maintenanceId = reset.getInt("MaintenanceId");
-            int equipementId = reset.getInt("EquipementId");
-            Date maintenanceDate = reset.getDate("MaintenanceDate");
-
-            m = new Maintenance(maintenanceId, equipementId, maintenanceDate);
-        } else {
-            System.out.println("No maintenance found with ID: " + id);
+    // Update maintenance details
+    public void update(Maintenance newMaintenance, Map<String, Object> updateData) {
+        StringBuilder queryBuilder = new StringBuilder("UPDATE maintenance SET ");
+        for (String key : updateData.keySet()) {
+            queryBuilder.append(key).append(" = ?, ");
         }
+        queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length()); // Remove the trailing comma
+        queryBuilder.append(" WHERE MaintenanceID = ?");
 
-        reset.close(); // Close the ResultSet
-        pre.close();   // Close the PreparedStatement
+        try (PreparedStatement ps = con.prepareStatement(queryBuilder.toString())) {
+            int index = 1;
+            for (Object value : updateData.values()) {
+                if (value instanceof String) {
+                    ps.setString(index++, (String) value);
+                } else if (value instanceof Date) {
+                    ps.setDate(index++, (Date) value);
+                } else if (value instanceof Double) {
+                    ps.setDouble(index++, (Double) value);
+                }
+            }
+            ps.setInt(index, newMaintenance.getMaintenanceID()); // Set the ID for the WHERE clause
 
-        return m; // Return the Maintenance object or null if not found
+            ps.executeUpdate();
+            System.out.println("Maintenance updated successfully");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Delete maintenance record
+    public void delete(Maintenance maintenance) {
+        String query = "DELETE FROM maintenance WHERE MaintenanceID = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, maintenance.getMaintenanceID());
+            ps.executeUpdate();
+            System.out.println("Maintenance deleted successfully");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

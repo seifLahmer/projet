@@ -16,14 +16,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
-        // Load the first interface (AjouterEquipement.fxml)
+// Load the first interface (AjouterEquipement.fxml)
         FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/ajouterEquipement.fxml"));
         Parent root1 = loader1.load();
         Scene scene1 = new Scene(root1);
         Stage stage1 = new Stage();
         stage1.setTitle("Ajouter Equipement");
-        stage1.setScene(scene1);
+        stage1.setScene(
+        scene1);
         stage1.show();
 
         // Load the second interface (AfficherEquipements.fxml)
@@ -43,5 +43,15 @@ public class Main extends Application {
         stage3.setTitle("Modifier Equipement");
         stage3.setScene(scene3);
         stage3.show();
+
+        // Load the 'AfficherMaintenance' interface (AjouterMaintenance.fxml)
+        FXMLLoader loader4 = new FXMLLoader(getClass().getResource("/AfficherMaintenances.fxml"));
+        Parent root4 = loader4.load();
+        Scene scene4 = new Scene(root4);
+        Stage stage4 = new Stage();
+        stage4.setTitle("Afficher Maintenance");
+        stage4.setScene(scene4);
+        stage4.show();
     }
+
 }

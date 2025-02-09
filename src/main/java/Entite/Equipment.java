@@ -31,7 +31,10 @@ public class Equipment {
         this.lastMaintenanceDate = lastMaintenanceDate;
         this.etat = etat;
     }
-
+    public Equipment(int equipementID) {
+        this.equipementID = equipementID;
+        // Initialize other fields as needed (you could leave them as null or default values if necessary)
+    }
     // Getters and setters
     public int getEquipementID() {
         return equipementID;
