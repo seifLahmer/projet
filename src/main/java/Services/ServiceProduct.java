@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-    public abstract class ServiceProduct implements IService<Product> {
+    public class ServiceProduct implements IService<Product> {
         private Connection conn = DataSource.getInstance().getCon();
         private Statement stat;
 
@@ -22,7 +22,7 @@ import java.util.List;
         @Override
         public void ajouter(Product product) throws SQLException {
             String query;
-            query = "INSERT INTO Product (nom, description, prix, typeProduit, quantiteDisponible) VALUES (?, ?, ?, ?, ?)";
+            query = "INSERT INTO Products (nom, description, prix, type_produit, quantiteDisponible) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pre = conn.prepareStatement(query);
             pre.setString(1, product.getNom());
             pre.setString(2, product.getDescription());
@@ -36,7 +36,7 @@ import java.util.List;
 
         @Override
         public void supprimer(Product produit) throws SQLException {
-            String query = "DELETE FROM Produit WHERE produitId = ?";
+            String query = "DELETE FROM Products WHERE produitId = ?";
             PreparedStatement pre = conn.prepareStatement(query);
             pre.setInt(1, produit.getProduitId());
 
@@ -46,7 +46,7 @@ import java.util.List;
 
         @Override
         public void update(Product produit) throws SQLException {
-            String query = "UPDATE Produit SET nom = ?, description = ?, prix = ?, typeProduit = ?, quantiteDisponible = ? WHERE produitId = ?";
+            String query = "UPDATE Products SET nom = ?, description = ?, prix = ?, type_Produit = ?, quantiteDisponible = ? WHERE produitId = ?";
             PreparedStatement pre = conn.prepareStatement(query);
             pre.setString(1, produit.getNom());
             pre.setString(2, produit.getDescription());
@@ -62,7 +62,7 @@ import java.util.List;
         @Override
         public List<Product> getAll() throws SQLException {
             List<Product> list = new ArrayList<>();
-            String query = "SELECT * FROM Product";
+            String query = "SELECT * FROM Products";
             ResultSet rs = stat.executeQuery(query);
 
             while (rs.next()) {
@@ -71,7 +71,7 @@ import java.util.List;
                         rs.getString("nom"),
                         rs.getString("description"),
                         rs.getDouble("prix"),
-                        rs.getString("typeProduit"),
+                        rs.getString("type_Produit"),
                         rs.getInt("quantiteDisponible")
                 );
                 list.add(produit);
@@ -81,7 +81,7 @@ import java.util.List;
 
         @Override
         public Product getById(int id) throws SQLException {
-            String query = "SELECT * FROM Product WHERE produitId = ?";
+            String query = "SELECT * FROM Products WHERE produitId = ?";
             PreparedStatement pre = conn.prepareStatement(query);
             pre.setInt(1, id);
 
@@ -92,7 +92,7 @@ import java.util.List;
                         rs.getString("nom"),
                         rs.getString("description"),
                         rs.getDouble("prix"),
-                        rs.getString("typeProduit"),
+                        rs.getString("type_Produit"),
                         rs.getInt("quantiteDisponible")
                 );
             }
