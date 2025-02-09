@@ -41,6 +41,15 @@
             <artifactId>mongodb-driver-core</artifactId>
             <version>4.9.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.3</version>
+        </dependency>
+
+
+
+
 
     </dependencies>
 
@@ -66,6 +75,7 @@
                     <mainClass>Test.Main</mainClass> <!-- Ensure this is correct -->
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>
