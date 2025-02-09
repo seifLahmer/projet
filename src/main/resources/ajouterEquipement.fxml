@@ -4,37 +4,28 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="652.0" prefWidth="609.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterEquipementController">
-    <TextField fx:id="equipementIDField" layoutX="216.0" layoutY="177.0" promptText="Equipement ID" />
-    <TextField fx:id="equipementNameField" layoutX="217.0" layoutY="219.0" promptText="Equipement Name" />
-    <TextField fx:id="categoryField" layoutX="216.0" layoutY="260.0" promptText="Category" />
-    <TextField fx:id="quantityField" layoutX="217.0" layoutY="304.0" promptText="Quantity" />
+<AnchorPane prefHeight="652.0" prefWidth="609.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterEquipementController">
 
-    <!-- ComboBox for Etat -->
-    <ComboBox fx:id="etatComboBox" layoutX="217.0" layoutY="445.0" />
-    <!-- Date Picker for AchatDate -->
-    <DatePicker fx:id="achatDatePicker" layoutX="217.0" layoutY="347.0" promptText="Achat Date" />
+    <TextField fx:id="equipementNameField" layoutX="252.0" layoutY="218.0" promptText="Nom de l'equipement" />
+    <TextField fx:id="categoryField" layoutX="252.0" layoutY="263.0" promptText="Catégorie" />
+    <TextField fx:id="quantityField" layoutX="252.0" layoutY="306.0" promptText="Quantité" />
 
-    <!-- Date Picker for LastMaintenanceDate -->
-    <DatePicker fx:id="lastMaintenanceDatePicker" layoutX="217.0" layoutY="392.0" promptText="Last Maintenance Date" />
+    <ComboBox fx:id="etatComboBox" layoutX="252.0" layoutY="445.0" />
+
+    <DatePicker fx:id="achatDatePicker" layoutX="252.0" layoutY="348.0" promptText="Date d'achat" />
+    <DatePicker fx:id="lastMaintenanceDatePicker" layoutX="252.0" layoutY="391.0" promptText="Date de la dernière maintenance" />
 
     <Button layoutX="230.0" layoutY="522.0" onMouseClicked="#ajouterEquipement" text="Ajouter Equipement" />
-   <ImageView fitHeight="97.0" fitWidth="135.0" layoutX="255.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
-      <image>
-         <Image url="@logo.png" />
-      </image>
-   </ImageView>
-   <Text layoutX="225.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenu sur le portail Admin." />
-   <Text layoutX="37.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Etat" />
-   <Text layoutX="34.0" layoutY="409.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date de la derniere maintenance" />
-   <Text layoutX="34.0" layoutY="324.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quantité" />
-   <Text layoutX="34.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date d'achat" />
-   <Text layoutX="34.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Catégorie" />
-   <Text layoutX="34.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom" />
-   <Text layoutX="34.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID" />
+
+    <Text layoutX="225.0" layoutY="145.0" text="Bienvenu sur le portail Admin." />
+    <Text layoutX="34.0" layoutY="236.0" text="Nom" />
+    <Text layoutX="34.0" layoutY="281.0" text="Catégorie" />
+    <Text layoutX="34.0" layoutY="324.0" text="Quantité" />
+    <Text layoutX="34.0" layoutY="366.0" text="Date d'achat" />
+    <Text layoutX="34.0" layoutY="409.0" text="Date de la dernière maintenance" />
+    <Text layoutX="34.0" layoutY="463.0" text="Etat" />
+
 </AnchorPane>

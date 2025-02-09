@@ -3,6 +3,7 @@ package Services;
 import Entite.Equipment;
 import Entite.Etat;
 import Utils.DataSource;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -19,19 +20,19 @@ public class ServiceEquipement {
 
     // Add new equipment
     public void ajouterEquipement(Equipment equipment) {
-        String query = "INSERT INTO equipement (EquipementID, EquipementName, Category, Quantity, AchatDate, LastMaintenanceDate, etat) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO equipement (EquipementName, Category, Quantity, AchatDate, LastMaintenanceDate, etat) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, equipment.getEquipementID());
-            ps.setString(2, equipment.getEquipementName());
-            ps.setString(3, equipment.getCategory());
-            ps.setInt(4, equipment.getQuantity());
-            ps.setDate(5, new java.sql.Date(equipment.getAchatDate().getTime()));
-            ps.setDate(6, new java.sql.Date(equipment.getLastMaintenanceDate().getTime()));
-            ps.setString(7, equipment.getEtat().name()); // Store the enum value as string
+            // No need to set EquipementID as it is auto-generated
+            ps.setString(1, equipment.getEquipementName());
+            ps.setString(2, equipment.getCategory());
+            ps.setInt(3, equipment.getQuantity());
+            ps.setDate(4, new java.sql.Date(equipment.getAchatDate().getTime()));
+            ps.setDate(5, new java.sql.Date(equipment.getLastMaintenanceDate().getTime()));
+            ps.setString(6, equipment.getEtat().name()); // Store the enum value as a string
 
             ps.executeUpdate();
-            System.out.println("Equipement ajoute avec succes");
+            System.out.println("Equipment added successfully");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,7 +40,7 @@ public class ServiceEquipement {
 
     // Get all equipment
     public ObservableList<Equipment> getAll() {
-        ObservableList<Equipment> equipments = FXCollections.observableArrayList(); // Use ObservableList
+        ObservableList<Equipment> equipments = FXCollections.observableArrayList();
         String query = "SELECT * FROM equipement";
 
         try (PreparedStatement ps = con.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
@@ -53,12 +54,12 @@ public class ServiceEquipement {
                         rs.getDate("LastMaintenanceDate"),
                         Etat.valueOf(rs.getString("etat"))
                 );
-                equipments.add(equipment); // Add to ObservableList
+                equipments.add(equipment);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return equipments; // Return the ObservableList
+        return equipments;
     }
 
     // Get equipment by ID
@@ -112,7 +113,7 @@ public class ServiceEquipement {
             ps.setInt(index, newEquipment.getEquipementID()); // Set the ID for the WHERE clause
 
             ps.executeUpdate();
-            System.out.println("Equipement mis à jour avec succès");
+            System.out.println("Equipment updated successfully");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -125,11 +126,9 @@ public class ServiceEquipement {
         try (PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, equipment.getEquipementID());
             ps.executeUpdate();
-            System.out.println("Equipement supprimé avec succès");
+            System.out.println("Equipment deleted successfully");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-    // Other helper methods can be added as needed.
 }

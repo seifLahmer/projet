@@ -15,7 +15,7 @@ public class Test {
         ServiceEquipement service = new ServiceEquipement();
 
         // 1. Adding a new equipment
-        Equipment newEquipment = new Equipment(0, "Leg press", "Legs", 10, new Date(), new Date(), Disponible);
+        Equipment newEquipment = new Equipment( "Leg press", "Legs", 10, new Date(), new Date(), Disponible);
         service.ajouterEquipement(newEquipment);  // This will print "Equipment added successfully!"
 
         // Fetch the equipment ID after insertion

@@ -1,13 +1,14 @@
 package Controllers;
-
 import Entite.Equipment;
 import Entite.Etat;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 public class ModifyEquipmentController {
@@ -52,30 +53,36 @@ public class ModifyEquipmentController {
 
     @FXML
     private void onSaveButtonClick() {
-        // Get the modified data from the fields
+        // Validate quantity
+        int quantity;
+        try {
+            quantity = Integer.parseInt(quantityField.getText());
+        } catch (NumberFormatException e) {
+            showErrorAlert("Invalid Quantity", "Please enter a valid number for the quantity.");
+            return;
+        }
+
+        // Validate dates
+        Date achatDate = parseDate(achatDateField.getText());
+        Date lastMaintenanceDate = parseDate(lastMaintenanceDateField.getText());
+        if (achatDate == null || lastMaintenanceDate == null) {
+            return;
+        }
+
+        // Validate etat
+        String etatStr = etatField.getText();
+        Etat etat = parseEtat(etatStr);
+        if (etat == null) {
+            return;
+        }
+
+        // Set the modified data to the current equipment
         currentEquipment.setEquipementName(nameField.getText());
         currentEquipment.setCategory(categoryField.getText());
-        currentEquipment.setQuantity(Integer.parseInt(quantityField.getText()));
-
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date achatDate = dateFormat.parse(achatDateField.getText());
-            Date lastMaintenanceDate = dateFormat.parse(lastMaintenanceDateField.getText());
-            currentEquipment.setAchatDate(achatDate);
-            currentEquipment.setLastMaintenanceDate(lastMaintenanceDate);
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Handle date format error (you can add a dialog here for the user)
-        }
-
-        // Set the 'etat' (assuming Etat is an enum, modify accordingly)
-        String etatStr = etatField.getText();
-        try {
-            currentEquipment.setEtat(Etat.valueOf(etatStr)); // Assuming Etat is an enum
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            // Handle invalid etat input
-        }
+        currentEquipment.setQuantity(quantity);
+        currentEquipment.setAchatDate(achatDate);
+        currentEquipment.setLastMaintenanceDate(lastMaintenanceDate);
+        currentEquipment.setEtat(etat);
 
         // Save the updated data (this could involve updating a database or list)
         saveUpdatedEquipment(currentEquipment);
@@ -85,8 +92,38 @@ public class ModifyEquipmentController {
         stage.close();
     }
 
+    private Date parseDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            showErrorAlert("Invalid Date", "Please enter a valid date in the format yyyy-MM-dd.");
+            return null;
+        }
+    }
+
+    private Etat parseEtat(String etatStr) {
+        try {
+            return Etat.valueOf(etatStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            showErrorAlert("Invalid Etat", "Please enter a valid Etat (Available, In Maintenance, Out of Service).");
+            return null;
+        }
+    }
+
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     private void saveUpdatedEquipment(Equipment equipment) {
         // Logic to save the modified equipment (could update the equipment in a database or list)
         System.out.println("Equipment saved: " + equipment);
+    }
+
+    public void initialize(Equipment equipment) {
     }
 }

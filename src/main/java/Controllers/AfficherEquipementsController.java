@@ -4,12 +4,16 @@ import Entite.Equipment;
 import Services.ServiceEquipement;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class AfficherEquipementsController {
@@ -87,14 +91,38 @@ public class AfficherEquipementsController {
     }
 
     private void modifyEquipement(Equipment equipment) {
-        // Logic to open modify interface or dialog
-        System.out.println("Modify: " + equipment);
+        try {
+            // Load the ModifyEquipment FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifyEquipment.fxml"));
+            AnchorPane modifyPane = loader.load();
+
+            // Get the controller of the modify interface
+            ModifyEquipmentController controller = loader.getController();
+            controller.initialize(equipment);  // Pass the selected equipment to the controller
+
+            // Create a new stage for the modify interface
+            Stage modifyStage = new Stage();
+            modifyStage.setTitle("Modify Equipment");
+            modifyStage.setScene(new Scene(modifyPane));
+            modifyStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     private void deleteEquipement(Equipment equipment) {
+        // Call the delete method from the service
+        serviceEquipement.supprimer(equipment);
 
+        // After deletion, refresh the table
+        equipementsTable.setItems(serviceEquipement.getAll());
     }
+
 
     public void refreshEquipements(ActionEvent actionEvent) {
+        // Fetch the latest data from the service
+        equipementsTable.setItems(serviceEquipement.getAll());
     }
+
 }
