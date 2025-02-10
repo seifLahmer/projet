@@ -1,6 +1,8 @@
 package Controllers;
 
 import Entite.Equipment;
+import Services.MaintenanceService;
+import Services.PDFGenerator;
 import Services.ServiceEquipement;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class AfficherEquipementsController {
 
@@ -47,6 +50,9 @@ public class AfficherEquipementsController {
     private TableColumn<Equipment, Void> actionColumn;
 
     private final ServiceEquipement serviceEquipement = new ServiceEquipement();
+    // Assuming you have service classes like this:
+    private MaintenanceService maintenanceService = new MaintenanceService();
+    private ServiceEquipement equipementService = new ServiceEquipement();
 
     @FXML
     public void initialize() {
@@ -140,5 +146,12 @@ public class AfficherEquipementsController {
         // Fetch the latest data from the service
         equipementsTable.setItems(serviceEquipement.getAll());
     }
+    @FXML
+    private void onDownloadEquipementPdf() {
+        // Fetch the list of all equipment records (similar to maintenance)
+        List<Equipment> equipements = equipementService.getAll();
 
+        // Generate the PDF for equipements
+        PDFGenerator.generateEquipementPdf(equipements);
+    }
 }

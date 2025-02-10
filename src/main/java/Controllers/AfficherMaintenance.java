@@ -2,6 +2,7 @@ package Controllers;
 
 import Entite.Maintenance;
 import Services.MaintenanceService;
+import Services.PDFGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class AfficherMaintenance {
 
@@ -131,5 +133,14 @@ public class AfficherMaintenance {
     public void refreshMaintenances() {
         // Fetch the latest data from the service and update the table
         maintenanceTable.setItems(maintenanceService.getAll());
+    }
+
+    @FXML
+    private void onDownloadMaintenancePdf() {
+        // Fetch the list of all maintenance records
+        List<Maintenance> maintenances = maintenanceService.getAll();
+
+        // Generate the PDF for maintenances
+        PDFGenerator.generateMaintenancePdf(maintenances);
     }
 }

@@ -27,5 +27,6 @@
 
         <!-- Button to refresh the table -->
         <Button layoutX="379.0" layoutY="512.0" onAction="#refreshMaintenances" text="Actualiser" />
+        <Button text="Download Maintenance PDF" onAction="#onDownloadMaintenancePdf" />
     </children>
 </AnchorPane>

@@ -1,104 +1,103 @@
 package Controllers;
-
-import Services.MaintenanceService;
 import Entite.Maintenance;
+import Services.MaintenanceService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModifyMaintenanceController {
 
-    @FXML
-    private TextField descriptionField;
-    @FXML
-    private TextField dateField;
-    @FXML
-    private TextField coutField;
-    @FXML
-    private TextField effectueParField;
-    @FXML
-    private Button saveButton;
+    @FXML private TextField descriptionField;
+    @FXML private TextField dateField;
+    @FXML private TextField coutField;
+    @FXML private TextField effectueParField;
 
-    private Maintenance currentMaintenance;
+    private Maintenance selectedMaintenance;
 
-    // Method to set the data from the selected maintenance
-    public void setMaintenanceData(Maintenance maintenance) {
-        this.currentMaintenance = maintenance;
-
-        // Populate the fields with the current maintenance data
-        descriptionField.setText(maintenance.getDescription());
-        dateField.setText(String.valueOf(maintenance.getMaintenanceDate())); // Adjust as needed
-        coutField.setText(String.valueOf(maintenance.getCout()));
-        effectueParField.setText(maintenance.getEffectuePar());
+    // Method to initialize the view with the selected maintenance data
+    public void initialize() {
+        if (selectedMaintenance != null) {
+            // Populate the fields with the selected maintenance data
+            descriptionField.setText(selectedMaintenance.getDescription());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            dateField.setText(sdf.format(selectedMaintenance.getMaintenanceDate()));  // Format the date
+            coutField.setText(String.valueOf(selectedMaintenance.getCout()));
+            effectueParField.setText(selectedMaintenance.getEffectuePar());
+        }
     }
 
+    // Method to set the selected maintenance object
+    public void setSelectedMaintenance(Maintenance maintenance) {
+        this.selectedMaintenance = maintenance;
+    }
+
+    // Save button action
     @FXML
     private void onSaveButtonClick() {
-        if (currentMaintenance == null) {
-            showErrorAlert("No Maintenance", "No maintenance selected for modification.");
+        if (selectedMaintenance == null) {
+            showError("No maintenance selected for modification.");
             return;
         }
 
-        // Validate fields
+        // Get the data from the input fields
         String description = descriptionField.getText();
-        String coutStr = coutField.getText();
-        String effectuePar = effectueParField.getText();
+        String date = dateField.getText();
+        String costText = coutField.getText();
+        String technician = effectueParField.getText();
 
-        if (description.isEmpty() || coutStr.isEmpty() || effectuePar.isEmpty()) {
-            showErrorAlert("Invalid Input", "All fields must be filled.");
+        // Validate inputs
+        if (description.isEmpty() || date.isEmpty() || costText.isEmpty() || technician.isEmpty()) {
+            showError("All fields must be filled.");
             return;
         }
 
-        // Convert cout to a double
-        double cout;
         try {
-            cout = Double.parseDouble(coutStr);
-        } catch (NumberFormatException e) {
-            showErrorAlert("Invalid Cost", "Please enter a valid number for the cost.");
-            return;
+            // Parse the cost value
+            double cost = Double.parseDouble(costText);
+
+            // Convert the date string to a Date object
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date parsedDate = sdf.parse(date);
+
+            // Update the maintenance record
+            selectedMaintenance.setDescription(description);
+            selectedMaintenance.setMaintenanceDate(parsedDate);
+            selectedMaintenance.setCout(cost);
+            selectedMaintenance.setEffectuePar(technician);
+
+            // Create a map to pass to the update method (if needed)
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("maintenance", selectedMaintenance);
+
+            // Create an instance of MaintenanceService and call the update method
+            MaintenanceService maintenanceService = new MaintenanceService();
+            maintenanceService.update(selectedMaintenance, updateData); // Assuming your update method takes the selectedMaintenance and a Map
+
+            // Show success message
+            showSuccess("Maintenance record updated successfully.");
+        } catch (Exception e) {
+            showError("An error occurred while saving the data: " + e.getMessage());
         }
-
-        // Convert date to Date object (assuming simple date format "YYYY-MM-DD")
-        Date maintenanceDate;
-        try {
-            maintenanceDate = java.sql.Date.valueOf(dateField.getText());  // Adjust the format as per your requirement
-        } catch (IllegalArgumentException e) {
-            showErrorAlert("Invalid Date", "Please enter a valid date (YYYY-MM-DD).");
-            return;
-        }
-
-        // Update the maintenance object with new values
-        currentMaintenance.setDescription(description);
-        currentMaintenance.setMaintenanceDate(maintenanceDate);
-        currentMaintenance.setCout(cout);
-        currentMaintenance.setEffectuePar(effectuePar);
-
-        // Prepare data to be updated
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("Description", currentMaintenance.getDescription());
-        updateData.put("MaintenanceDate", currentMaintenance.getMaintenanceDate());
-        updateData.put("Cout", currentMaintenance.getCout());
-        updateData.put("EffectuePar", currentMaintenance.getEffectuePar());
-
-        // Call the service to update the database
-        MaintenanceService maintenanceService = new MaintenanceService();
-        maintenanceService.update(currentMaintenance, updateData);
-
-        // Close the modify window
-        Stage stage = (Stage) saveButton.getScene().getWindow();
-        stage.close();
     }
 
-    private void showErrorAlert(String title, String message) {
+    // Helper method to show error messages
+    private void showError(String message) {
         Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(title);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Helper method to show success messages
+    private void showSuccess(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Success");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
