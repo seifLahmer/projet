@@ -114,7 +114,7 @@ public class AfficherEquipementsController {
 
             // Get the controller of the modify interface
             ModifyEquipmentController controller = loader.getController();
-            controller.initialize(equipment);  // Pass the selected equipment to the controller
+            controller.setEquipmentData(equipment);  // Pass the selected equipment to the controller
 
             // Create a new stage for the modify interface
             Stage modifyStage = new Stage();
