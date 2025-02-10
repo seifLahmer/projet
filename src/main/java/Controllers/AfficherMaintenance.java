@@ -111,6 +111,11 @@ public class AfficherMaintenance {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifyMaintenance.fxml"));
             VBox modifyPane = loader.load();
 
+            // Get the ModifyMaintenanceController from the loader
+            ModifyMaintenanceController controller = loader.getController();
+
+            // Set the selected maintenance to the ModifyMaintenanceController
+            controller.setSelectedMaintenance(maintenance);
 
             // Create a new stage for the modify interface
             Stage modifyStage = new Stage();
@@ -121,6 +126,8 @@ public class AfficherMaintenance {
             e.printStackTrace();
         }
     }
+
+
 
     private void deleteMaintenance(Maintenance maintenance) {
         // Call the delete method from the service

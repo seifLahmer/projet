@@ -1,93 +1,81 @@
 package Controllers;
+
 import Entite.Maintenance;
-import Services.MaintenanceService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-
-import java.text.SimpleDateFormat;
+import Services.MaintenanceService;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModifyMaintenanceController {
 
     @FXML private TextField descriptionField;
-    @FXML private TextField dateField;
     @FXML private TextField coutField;
     @FXML private TextField effectueParField;
+    @FXML private DatePicker maintenanceDateField;
 
     private Maintenance selectedMaintenance;
 
-    // Method to initialize the view with the selected maintenance data
+    // Initialize view with the selected maintenance data
+    @FXML
     public void initialize() {
         if (selectedMaintenance != null) {
-            // Populate the fields with the selected maintenance data
             descriptionField.setText(selectedMaintenance.getDescription());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            dateField.setText(sdf.format(selectedMaintenance.getMaintenanceDate()));  // Format the date
+
+            // Convert Date to LocalDate without using toLocalDate()
+            if (selectedMaintenance.getMaintenanceDate() != null) {
+                maintenanceDateField.setValue(
+                        Instant.ofEpochMilli(selectedMaintenance.getMaintenanceDate().getTime())
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                );
+            }
+
             coutField.setText(String.valueOf(selectedMaintenance.getCout()));
             effectueParField.setText(selectedMaintenance.getEffectuePar());
         }
     }
 
-    // Method to set the selected maintenance object
+
+    // Set the selected maintenance object
     public void setSelectedMaintenance(Maintenance maintenance) {
         this.selectedMaintenance = maintenance;
     }
 
     // Save button action
     @FXML
-    private void onSaveButtonClick() {
-        if (selectedMaintenance == null) {
-            showError("No maintenance selected for modification.");
-            return;
-        }
+    public void onSaveButtonClick() {
+        if (selectedMaintenance != null) {
+            // Update the fields of selectedMaintenance
+            selectedMaintenance.setDescription(descriptionField.getText());
+            selectedMaintenance.setCout(Double.parseDouble(coutField.getText()));
+            selectedMaintenance.setEffectuePar(effectueParField.getText());
+            selectedMaintenance.setMaintenanceDate(java.sql.Date.valueOf(maintenanceDateField.getValue()));
 
-        // Get the data from the input fields
-        String description = descriptionField.getText();
-        String date = dateField.getText();
-        String costText = coutField.getText();
-        String technician = effectueParField.getText();
-
-        // Validate inputs
-        if (description.isEmpty() || date.isEmpty() || costText.isEmpty() || technician.isEmpty()) {
-            showError("All fields must be filled.");
-            return;
-        }
-
-        try {
-            // Parse the cost value
-            double cost = Double.parseDouble(costText);
-
-            // Convert the date string to a Date object
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date parsedDate = sdf.parse(date);
-
-            // Update the maintenance record
-            selectedMaintenance.setDescription(description);
-            selectedMaintenance.setMaintenanceDate(parsedDate);
-            selectedMaintenance.setCout(cost);
-            selectedMaintenance.setEffectuePar(technician);
-
-            // Create a map to pass to the update method (if needed)
+            // Prepare additional update data
             Map<String, Object> updateData = new HashMap<>();
-            updateData.put("maintenance", selectedMaintenance);
+            updateData.put("updatedBy", "Admin"); // Example key-value pair
+            updateData.put("updateTimestamp", System.currentTimeMillis()); // Example: Current timestamp
+            MaintenanceService MaintenanceService = new MaintenanceService();
+            // Call the update method
+            MaintenanceService.update(selectedMaintenance, updateData);
 
-            // Create an instance of MaintenanceService and call the update method
-            MaintenanceService maintenanceService = new MaintenanceService();
-            maintenanceService.update(selectedMaintenance, updateData); // Assuming your update method takes the selectedMaintenance and a Map
-
-            // Show success message
-            showSuccess("Maintenance record updated successfully.");
-        } catch (Exception e) {
-            showError("An error occurred while saving the data: " + e.getMessage());
+            // Notify user or refresh the UI
+            System.out.println("Maintenance updated successfully!");
+        } else {
+            System.out.println("No maintenance selected for update.");
         }
     }
 
+
+
     // Helper method to show error messages
     private void showError(String message) {
-        Alert alert = new Alert(AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -96,7 +84,7 @@ public class ModifyMaintenanceController {
 
     // Helper method to show success messages
     private void showSuccess(String message) {
-        Alert alert = new Alert(AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setHeaderText(null);
         alert.setContentText(message);
