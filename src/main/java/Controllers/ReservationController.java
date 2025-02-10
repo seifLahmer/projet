@@ -1,4 +1,5 @@
 package Controllers;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import Entite.Activity;
@@ -32,6 +33,7 @@ public class ReservationController {
     private final ServiceReservation serviceReservation = new ServiceReservation();
     private final ServiceActivity serviceActivity = new ServiceActivity();
     private final int membreId = 1; // Remplace par l'ID réel du membre connecté
+
 
     @FXML
     private VBox activitesDispoContainer; // Correction : doit être VBox comme dans le FXML
@@ -110,9 +112,26 @@ public class ReservationController {
 
             for (Activity activite : activites) {
                 boolean matchActivity = (selectedActivity == null || selectedActivity.equals("Show All") || activite.getActivityName().equals(selectedActivity));
-                boolean matchDate = (selectedDate == null || activite.getDate().equals(selectedDate.toString()));
 
+                // Convert java.util.Date or java.sql.Date to LocalDate
+                LocalDate activityDate = null;
+                if (activite.getDate() != null) {
+                    if (activite.getDate() instanceof java.sql.Date) {
+                        // If it's a java.sql.Date, convert directly to LocalDate
+                        activityDate = ((java.sql.Date) activite.getDate()).toLocalDate();
+                    } else if (activite.getDate() instanceof java.util.Date) {
+                        // If it's a java.util.Date, convert to Instant and then to LocalDate
+                        activityDate = activite.getDate().toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
+                    }
+                }
 
+                // Compare dates
+                boolean matchDate = (selectedDate == null ||
+                        (activityDate != null && activityDate.equals(selectedDate)));
+
+                // Add the activity card if it matches the filters
                 if (matchActivity && matchDate && !activitesReserveesIds.contains(activite.getActivityId())) {
                     HBox card = creerCarteActivite(activite);
                     activitesDispoContainer.getChildren().add(card);
@@ -147,15 +166,16 @@ public class ReservationController {
      */
     private HBox creerCarteActivite(Activity activite) {
         HBox card = new HBox(15);
-        card.setStyle("-fx-border-color: black; -fx-padding: 15px; -fx-background-color: #f9f9f9;");
+        card.setStyle("-fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 15px; -fx-background-color: #FFFFFF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);");
         card.setAlignment(Pos.CENTER_LEFT);
 
-         //Charger l’image (vérification pour éviter les erreurs)
+// Charger l’image (vérification pour éviter les erreurs)
         String imageUrl = sportImages.get(random.nextInt(sportImages.size()));
         ImageView imageView = new ImageView(new Image(imageUrl));
-        imageView.setFitWidth(100);
-        imageView.setFitHeight(100);
-        // Détails de l'activité
+        imageView.setFitWidth(200); // Image plus grande
+        imageView.setFitHeight(200); // Image plus grande
+
+// Détails de l'activité
         VBox details = new VBox(5);
         details.getChildren().addAll(
                 createStyledLabel("Activité : " + activite.getActivityName()),
@@ -167,34 +187,42 @@ public class ReservationController {
         );
         details.setStyle("-fx-background-color: white; -fx-padding: 10px;");
 
-
-
-        System.out.println(details);// Bouton Réserver
-        Button reserverButton = new Button("Réserver");
-        reserverButton.setStyle("-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-size: 14px;");
+// Bouton Reservation
+        Button reserverButton = new Button("Reservation");
+        reserverButton.setStyle("-fx-background-color: #393969; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 5;");
+        reserverButton.setMaxWidth(Double.MAX_VALUE); // Étaler le bouton sur toute la largeur
         reserverButton.setOnAction(e -> {
             try {
                 serviceReservation.ajouterReservation(membreId, activite.getActivityId());
 
                 // Générer le PDF
-                PDFReservation.generateActivityPdf(activite,membreId);
+                PDFReservation.generateActivityPdf(activite, membreId);
                 afficherActivitesDisponibles();
+
                 // Afficher un message de confirmation
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Réservation Confirmée");
                 alert.setHeaderText(null);
                 alert.setContentText("Votre réservation a été enregistrée et un PDF a été généré !");
-                alert.showAndWait();// Mise à jour après réservation
+                alert.showAndWait(); // Mise à jour après réservation
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         });
 
-        // Ajouter les éléments à la carte
+// Conteneur pour l'image et les détails (côte à côte)
+        HBox imageAndDetails = new HBox(15);
+        imageAndDetails.getChildren().addAll(imageView, details);
+        imageAndDetails.setAlignment(Pos.CENTER_LEFT);
 
-        System.out.println("Détails de l'activité : " + details.getChildren());
-        card.getChildren().addAll( imageView,details, reserverButton);
-        System.out.println(card);
+// Conteneur principal pour la carte (vertical)
+        VBox cardContainer = new VBox(10);
+        cardContainer.getChildren().addAll(imageAndDetails, reserverButton);
+        cardContainer.setAlignment(Pos.CENTER);
+
+// Ajouter le conteneur principal à la carte
+        card.getChildren().add(cardContainer);
+
         return card;
     }
     // Méthode pour créer un Label stylisé
@@ -202,6 +230,17 @@ public class ReservationController {
         Label label = new Label(text);
         label.setStyle("-fx-text-fill: black; -fx-font-size: 14px; -fx-font-weight: bold;");
         return label;
+    }
+    @FXML
+    private void resetFilters() {
+        // Réinitialiser le filtre d'activité
+        activityFilter.setValue(null); // ou activityFilter.getSelectionModel().clearSelection();
+
+        // Réinitialiser le filtre de date
+        dateFilter.setValue(null);
+
+        // Réafficher toutes les activités disponibles
+        afficherActivitesDisponibles();
     }
 
 }

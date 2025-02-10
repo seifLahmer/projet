@@ -72,7 +72,21 @@ public class ActivitesReserveesController {
     @FXML
     private void retourActivites() throws IOException {
         Stage stage = (Stage) activitesReserveesContainer.getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/resources/activites_disponibles.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Reservations.fxml"));
         stage.setScene(new Scene(root));
+    }
+    @FXML
+    private void afficherActivites() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Reservations.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Les activités disponibles");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -14,5 +14,6 @@
         <FlowPane fx:id="activitesReserveesContainer" hgap="10" vgap="10" alignment="CENTER"/>
     </ScrollPane>
 
-    <Button text="Retour aux activités" onAction="#retourActivites"/>
+
 </VBox>
+
