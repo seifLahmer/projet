@@ -2,7 +2,6 @@ package Controllers;
 
 import Entite.Maintenance;
 import Services.MaintenanceService;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,8 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -50,10 +49,9 @@ public class AfficherMaintenance {
     public void initialize() {
         // Bind columns to Maintenance properties
         maintenanceIdColumn.setCellValueFactory(cellData -> cellData.getValue().maintenanceIdProperty().asObject());
-        // FIX: Use getEquipementId() instead of getEquipement()
-        equipementIdColumn.setCellValueFactory(cellData ->
-                new SimpleIntegerProperty(cellData.getValue().getEquipementId()).asObject()
-        );
+
+        // FIX: Use getEquipementId() directly without SimpleIntegerProperty
+        equipementIdColumn.setCellValueFactory(cellData -> cellData.getValue().equipementIdProperty().asObject());
 
         // Bind the Maintenance Date column
         maintenanceDateColumn.setCellValueFactory(cellData -> {
@@ -109,7 +107,8 @@ public class AfficherMaintenance {
         try {
             // Load the ModifyMaintenance FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifyMaintenance.fxml"));
-            AnchorPane modifyPane = loader.load();
+            VBox modifyPane = loader.load();
+
 
             // Create a new stage for the modify interface
             Stage modifyStage = new Stage();
@@ -126,11 +125,11 @@ public class AfficherMaintenance {
         maintenanceService.delete(maintenance);
 
         // After deletion, refresh the table
-        maintenanceTable.setItems(maintenanceService.getAll());
+        refreshMaintenances();
     }
 
-    public void refreshMaintenances(ActionEvent actionEvent) {
-        // Fetch the latest data from the service
+    public void refreshMaintenances() {
+        // Fetch the latest data from the service and update the table
         maintenanceTable.setItems(maintenanceService.getAll());
     }
 }

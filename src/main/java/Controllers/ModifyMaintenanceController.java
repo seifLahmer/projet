@@ -1,16 +1,15 @@
 package Controllers;
 
-import Entite.Etat;
-import Entite.Maintenance;
 import Services.MaintenanceService;
+import Entite.Maintenance;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +20,9 @@ public class ModifyMaintenanceController {
     @FXML
     private TextField dateField;
     @FXML
-    private ComboBox<Etat> etatComboBox; // ComboBox for Etat
+    private TextField coutField;
+    @FXML
+    private TextField effectueParField;
     @FXML
     private Button saveButton;
 
@@ -31,42 +32,64 @@ public class ModifyMaintenanceController {
     public void setMaintenanceData(Maintenance maintenance) {
         this.currentMaintenance = maintenance;
 
-        // Populate the fields with the current maintenance data (excluding id)
+        // Populate the fields with the current maintenance data
         descriptionField.setText(maintenance.getDescription());
-        dateField.setText(String.valueOf(maintenance.getDate())); // Adjust if you need a specific format
-
-        // Set the 'etat' ComboBox with available Etat values
-        etatComboBox.getItems().setAll(Etat.values());  // Add all Etat values to the ComboBox
-        etatComboBox.setValue(maintenance.getEtat());    // Set the current Etat to the selected value
+        dateField.setText(String.valueOf(maintenance.getMaintenanceDate())); // Adjust as needed
+        coutField.setText(String.valueOf(maintenance.getCout()));
+        effectueParField.setText(maintenance.getEffectuePar());
     }
 
     @FXML
     private void onSaveButtonClick() {
         if (currentMaintenance == null) {
             showErrorAlert("No Maintenance", "No maintenance selected for modification.");
-            return;  // Stop further execution if no maintenance is set
+            return;
         }
 
-        // Validate description and date
+        // Validate fields
         String description = descriptionField.getText();
-        if (description.isEmpty()) {
-            showErrorAlert("Invalid Description", "Please enter a valid description.");
+        String coutStr = coutField.getText();
+        String effectuePar = effectueParField.getText();
+
+        if (description.isEmpty() || coutStr.isEmpty() || effectuePar.isEmpty()) {
+            showErrorAlert("Invalid Input", "All fields must be filled.");
             return;
         }
 
-        // Validate etat
-        Etat etat = etatComboBox.getValue();  // Get selected Etat
-        if (etat == null) {
-            showErrorAlert("Invalid Etat", "Please select a valid Etat.");
+        // Convert cout to a double
+        double cout;
+        try {
+            cout = Double.parseDouble(coutStr);
+        } catch (NumberFormatException e) {
+            showErrorAlert("Invalid Cost", "Please enter a valid number for the cost.");
             return;
         }
 
-        // Set the modified data to the current maintenance
+        // Convert date to Date object (assuming simple date format "YYYY-MM-DD")
+        Date maintenanceDate;
+        try {
+            maintenanceDate = java.sql.Date.valueOf(dateField.getText());  // Adjust the format as per your requirement
+        } catch (IllegalArgumentException e) {
+            showErrorAlert("Invalid Date", "Please enter a valid date (YYYY-MM-DD).");
+            return;
+        }
+
+        // Update the maintenance object with new values
         currentMaintenance.setDescription(description);
-        currentMaintenance.setEtat(etat);
+        currentMaintenance.setMaintenanceDate(maintenanceDate);
+        currentMaintenance.setCout(cout);
+        currentMaintenance.setEffectuePar(effectuePar);
 
-        // Save the updated data (this could involve updating a database or list)
-        saveUpdatedMaintenance(currentMaintenance);
+        // Prepare data to be updated
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("Description", currentMaintenance.getDescription());
+        updateData.put("MaintenanceDate", currentMaintenance.getMaintenanceDate());
+        updateData.put("Cout", currentMaintenance.getCout());
+        updateData.put("EffectuePar", currentMaintenance.getEffectuePar());
+
+        // Call the service to update the database
+        MaintenanceService maintenanceService = new MaintenanceService();
+        maintenanceService.update(currentMaintenance, updateData);
 
         // Close the modify window
         Stage stage = (Stage) saveButton.getScene().getWindow();
@@ -79,20 +102,5 @@ public class ModifyMaintenanceController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private void saveUpdatedMaintenance(Maintenance maintenance) {
-        // Create an instance of ServiceMaintenance and call update
-        MaintenanceService serviceMaintenance = new MaintenanceService();
-
-        // Prepare the update data (map could be optional if not needed)
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("Description", maintenance.getDescription());
-        updateData.put("Etat", maintenance.getEtat());
-        // Add other fields if needed like Date or others
-
-        serviceMaintenance.update(maintenance, updateData);  // Now it's called on the instance
-
-        System.out.println("Maintenance saved: " + maintenance);
     }
 }

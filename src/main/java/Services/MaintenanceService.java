@@ -15,43 +15,20 @@ public class MaintenanceService {
     public MaintenanceService() {
         con = DataSource.getInstance().getCon();
     }
-
-    // Add new maintenance record
-    public void ajouterMaintenance(Maintenance maintenance) {
-        String query = "INSERT INTO maintenance (EquipementID, MaintenanceDate, Description, Cout, EffectuePar) VALUES (?, ?, ?, ?, ?)";
-
-        try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, maintenance.getEquipementId());
-            ps.setDate(2, new java.sql.Date(maintenance.getMaintenanceDate().getTime()));
-            ps.setString(3, maintenance.getDescription());
-            ps.setDouble(4, maintenance.getCout());
-            ps.setString(5, maintenance.getEffectuePar());
-
-            ps.executeUpdate();
-            System.out.println("Maintenance added successfully");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Get all maintenance records
+    // Get all maintenance records from the database
     public ObservableList<Maintenance> getAll() {
         ObservableList<Maintenance> maintenances = FXCollections.observableArrayList();
         String query = "SELECT * FROM maintenance";
 
         try (PreparedStatement ps = con.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                // Retrieve additional data from ResultSet
-                double cout = rs.getDouble("Cout");
-                String effectuePar = rs.getString("EffectuePar");
-
                 Maintenance maintenance = new Maintenance(
                         rs.getInt("MaintenanceID"),
                         rs.getInt("EquipementID"),
                         rs.getDate("MaintenanceDate"),
                         rs.getString("Description"),
-                        cout, // Pass the 'cout'
-                        effectuePar // Pass the 'effectuePar'
+                        rs.getDouble("Cout"),
+                        rs.getString("EffectuePar")
                 );
                 maintenances.add(maintenance);
             }
@@ -61,32 +38,17 @@ public class MaintenanceService {
         return maintenances;
     }
 
-    // Get maintenance by ID
-    public Maintenance getById(int maintenanceID) {
-        String query = "SELECT * FROM maintenance WHERE MaintenanceID = ?";
-        Maintenance maintenance = null;
+    // Delete a maintenance record from the database
+    public void delete(Maintenance maintenance) {
+        String query = "DELETE FROM maintenance WHERE MaintenanceID = ?";
 
         try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, maintenanceID);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    double cout = rs.getDouble("Cout");
-                    String effectuePar = rs.getString("EffectuePar");
-
-                    maintenance = new Maintenance(
-                            rs.getInt("MaintenanceID"),
-                            rs.getInt("EquipementID"),
-                            rs.getDate("MaintenanceDate"),
-                            rs.getString("Description"),
-                            cout, // Pass the 'cout'
-                            effectuePar // Pass the 'effectuePar'
-                    );
-                }
-            }
+            ps.setInt(1, maintenance.getMaintenanceID());
+            ps.executeUpdate();
+            System.out.println("Maintenance deleted successfully");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return maintenance;
     }
 
     // Update maintenance details
@@ -118,16 +80,5 @@ public class MaintenanceService {
         }
     }
 
-    // Delete maintenance record
-    public void delete(Maintenance maintenance) {
-        String query = "DELETE FROM maintenance WHERE MaintenanceID = ?";
-
-        try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, maintenance.getMaintenanceID());
-            ps.executeUpdate();
-            System.out.println("Maintenance deleted successfully");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    // Other methods...
 }
