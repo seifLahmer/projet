@@ -17,7 +17,7 @@ public class MemberList {
     }
     public String getNameById(int id) {
         return members.stream()
-                .filter(m -> m.getRole().equalsIgnoreCase("coach") )
+                .filter(m -> m.getRole().equalsIgnoreCase("coach") && id == m.getMemberId())
                 .map(m -> m.getFirstName() + " " + m.getLastName())
                 .findFirst()
                 .orElse("Coach non trouvé");

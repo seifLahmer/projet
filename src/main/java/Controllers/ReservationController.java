@@ -1,4 +1,5 @@
 package Controllers;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import Entite.Activity;
 import Services.ServiceActivity;
@@ -108,8 +109,9 @@ public class ReservationController {
             List<Integer> activitesReserveesIds = serviceReservation.getActivitesReserveesIds(membreId);
 
             for (Activity activite : activites) {
-                boolean matchActivity = (selectedActivity == null || activite.getActivityName().equals(selectedActivity));
+                boolean matchActivity = (selectedActivity == null || selectedActivity.equals("Show All") || activite.getActivityName().equals(selectedActivity));
                 boolean matchDate = (selectedDate == null || activite.getDate().equals(selectedDate.toString()));
+
 
                 if (matchActivity && matchDate && !activitesReserveesIds.contains(activite.getActivityId())) {
                     HBox card = creerCarteActivite(activite);
@@ -120,6 +122,7 @@ public class ReservationController {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Ouvre la fenêtre des réservations de l'utilisateur

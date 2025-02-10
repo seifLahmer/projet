@@ -1,7 +1,6 @@
 package Controllers;
 
 import Entite.Activity;
-import Entite.MapCoachActivities;
 import Entite.Member;
 import Entite.MemberList;
 import Services.ServiceActivity;
@@ -57,67 +56,112 @@ public class ActivityController {
 
 
     ServiceMember sm = new ServiceMember();
-    MapCoachActivities mapCoachActivities = new MapCoachActivities();
 
-    @FXML
-    void add(ActionEvent event) throws SQLException {
+    private boolean validateInput() {
+        String errorMessage = "";
 
-        // Création d'une instance du service
-        ServiceActivity sa = new ServiceActivity();
-
-
-            // Récupération des données saisies
-            String name = nameId.getText();
-            String description = descriptionId.getText();
-            LocalDate date = dateId.getValue();
-            int duration = Integer.parseInt(durationId.getText());
-            int maxParticipants = Integer.parseInt(maxID.getText());
-            LocalTime hour = LocalTime.parse(hourId.getText()); // Format attendu : HH:mm
-
-            // Création de l'activité
-            Activity activity = new Activity(
-                    name,
-                    description,
-                    maxParticipants,
-
-                    java.sql.Date.valueOf(date),
-                    java.sql.Time.valueOf(hour),
-                    duration,
-                    onCoachSelected()
-            );
-
-        if(!mapCoachActivities.isConflit(activity)){
-                // Ajout de l'activité dans la base de données
+        if (nameId.getText().trim().isEmpty()) {
+            errorMessage += "Activity Name is required.\n";
+        }
+        if (descriptionId.getText().trim().isEmpty()) {
+            errorMessage += "Description is required.\n";
+        }
+        if (dateId.getValue() == null) {
+            errorMessage += "Date is required.\n";
+        }
+        if (hourId.getText().trim().isEmpty()) {
+            errorMessage += "Hour is required (HH:mm format).\n";
+        } else {
             try {
-                sa.ajouter(activity);
-                initialize();
-                clearFields();
-                Alert success = new Alert(Alert.AlertType.INFORMATION);
-                success.setTitle("Succès");
-                success.setHeaderText(null);
-                success.setContentText("Activité ajoutée avec succès !");
-                success.showAndWait();
+                LocalTime.parse(hourId.getText()); // Check time format
             } catch (Exception e) {
-                System.out.println(e);
-                Alert error = new Alert(Alert.AlertType.ERROR);
-                error.setTitle("Erreur");
-                error.setHeaderText(null);
-                error.setContentText("Une erreur s'est produite lors de l'ajout de l'activité.");
-                error.showAndWait();
+                errorMessage += "Invalid time format (expected HH:mm).\n";
             }
         }
-        else {
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Erreur");
-            error.setHeaderText(null);
-            error.setContentText("This Coach has another activity at this time");
-            error.showAndWait();
+        if (durationId.getText().trim().isEmpty()) {
+            errorMessage += "Duration is required.\n";
+        } else {
+            try {
+                int duration = Integer.parseInt(durationId.getText());
+                if (duration <= 0) {
+                    errorMessage += "Duration must be a positive number.\n";
+                }
+            } catch (NumberFormatException e) {
+                errorMessage += "Duration must be a valid number.\n";
+            }
+        }
+        if (maxID.getText().trim().isEmpty()) {
+            errorMessage += "Max Members is required.\n";
+        } else {
+            try {
+                int maxMembers = Integer.parseInt(maxID.getText());
+                if (maxMembers <= 0) {
+                    errorMessage += "Max Members must be a positive number.\n";
+                }
+            } catch (NumberFormatException e) {
+                errorMessage += "Max Members must be a valid number.\n";
+            }
+        }
+        if (listID.getValue() == null || listID.getValue().trim().isEmpty()) {
+            errorMessage += "Coach selection is required.\n";
         }
 
-        // Retour utilisateur
+        if (!errorMessage.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Input Validation Error");
+            alert.setHeaderText("Please correct the following errors:");
+            alert.setContentText(errorMessage);
+            alert.showAndWait();
+            return true;
+        }
 
+        return false;
+    }
+    @FXML
+    void add(ActionEvent event) throws SQLException {
+        if (validateInput()) {
+            return; // Stop if validation fails
+        }
+
+        // Create the service instance
+        ServiceActivity sa = new ServiceActivity();
+
+        // Retrieve input values
+        String name = nameId.getText();
+        String description = descriptionId.getText();
+        LocalDate date = dateId.getValue();
+        int duration = Integer.parseInt(durationId.getText());
+        int maxParticipants = Integer.parseInt(maxID.getText());
+        LocalTime hour = LocalTime.parse(hourId.getText());
+        int coachId = onCoachSelected();
+
+        // Check if the coach is available
+        if (!sa.isCoachAvailable(coachId, java.sql.Date.valueOf(date), java.sql.Time.valueOf(hour), duration)) {
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setTitle("Coach Unavailable");
+            error.setHeaderText(null);
+            error.setContentText("This coach already has an activity at the selected time.");
+            error.showAndWait();
+            return;
+        }
+        // Create Activity object
+        Activity activity = new Activity(
+                name, description, maxParticipants,
+                java.sql.Date.valueOf(date),
+                java.sql.Time.valueOf(hour),
+                duration, coachId
+        );
+        sa.ajouter(activity);
+        initialize();
+        clearFields();
+        Alert success = new Alert(Alert.AlertType.INFORMATION);
+        success.setTitle("Success");
+        success.setHeaderText(null);
+        success.setContentText("Activity added successfully!");
+        success.showAndWait();
 
     }
+
 
     @FXML
     void delete(ActionEvent event) {
@@ -175,12 +219,15 @@ public class ActivityController {
 
     @FXML
     void update(ActionEvent event) {
-        // Récupérer l'activité sélectionnée
         Activity selectedActivity = tableID.getSelectionModel().getSelectedItem();
 
         if (selectedActivity != null) {
+            if (validateInput()) {
+                return; // Stop if validation fails
+            }
+
             try {
-                // Récupérer les données modifiées du formulaire
+                // Retrieve updated values
                 String name = nameId.getText();
                 String description = descriptionId.getText();
                 int coach = onCoachSelected();
@@ -189,7 +236,7 @@ public class ActivityController {
                 int maxParticipants = Integer.parseInt(maxID.getText());
                 LocalTime hour = LocalTime.parse(hourId.getText());
 
-                // Mise à jour de l'objet activité
+                // Update activity object
                 selectedActivity.setActivityName(name);
                 selectedActivity.setDescription(description);
                 selectedActivity.setMemberId(coach);
@@ -198,36 +245,35 @@ public class ActivityController {
                 selectedActivity.setMaxMembers(maxParticipants);
                 selectedActivity.setHour(Time.valueOf(hour));
 
-                // Appeler la méthode update simplifiée
+                // Perform update
                 ServiceActivity sa = new ServiceActivity();
                 sa.update(selectedActivity);
 
-                // Rafraîchir la table
                 tableID.refresh();
-
                 clearFields();
-                Alert success = new Alert(Alert.AlertType.INFORMATION);
-                success.setTitle("Succès");
-                success.setHeaderText(null);
-                success.setContentText("Activité mise à jour avec succès !");
-                success.showAndWait();
 
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Success");
+                success.setHeaderText(null);
+                success.setContentText("Activity updated successfully!");
+                success.showAndWait();
             } catch (Exception e) {
                 e.printStackTrace();
                 Alert error = new Alert(Alert.AlertType.ERROR);
-                error.setTitle("Erreur");
+                error.setTitle("Error");
                 error.setHeaderText(null);
-                error.setContentText("Une erreur s'est produite lors de la mise à jour de l'activité.");
+                error.setContentText("An error occurred while updating the activity.");
                 error.showAndWait();
             }
         } else {
             Alert warning = new Alert(Alert.AlertType.WARNING);
-            warning.setTitle("Attention");
+            warning.setTitle("Warning");
             warning.setHeaderText(null);
-            warning.setContentText("Veuillez sélectionner une activité à modifier.");
+            warning.setContentText("Please select an activity to update.");
             warning.showAndWait();
         }
     }
+
     @FXML
     void initialize() throws SQLException {
         ServiceActivity sera = new ServiceActivity();

@@ -1,8 +1,6 @@
 package Services;
 
 import Entite.Activity;
-import Entite.MapCoachActivities;
-import Entite.Reservation;
 import Utils.DataSource;
 
 import java.lang.reflect.Member;
@@ -10,7 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class ServiceActivity implements IService<Activity>{
     private Connection conn = DataSource.getInstance().getCon();
@@ -26,6 +23,20 @@ public class ServiceActivity implements IService<Activity>{
             throw new RuntimeException(e);
         }
     }
+    public boolean isCoachAvailable(int coachId, Date date, Time hour, int duration) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Activity " +
+                "WHERE memberId = " + coachId + " " +
+                "AND date = '" + date + "' " +
+                "AND (hour <= '" + hour + "' " +
+                "AND ADDTIME(hour, SEC_TO_TIME(" + duration + " * 60)) > '" + hour + "')";
+
+        ResultSet rs = stat.executeQuery(query);
+        if (rs.next()) {
+            return rs.getInt(1) == 0; // Return true if the coach is available
+        }
+        return false;
+    }
+
 
     @Override
     public void ajouter(Activity activity) throws SQLException {
