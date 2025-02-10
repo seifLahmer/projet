@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane style="-fx-background-color: #E3F2FD;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlles.PaymentController">
+
+    <!-- Champ ID Membre -->
+    <TextField fx:id="memberIdField" layoutX="30" layoutY="50" promptText="Member ID" style="-fx-pref-width: 200px; -fx-pref-height: 35px; -fx-background-color: #BBDEFB;                       -fx-border-color: #2196F3; -fx-border-radius: 5px; -fx-padding: 5px;" />
+
+    <!-- Champ Montant -->
+    <TextField fx:id="amountField" layoutX="30" layoutY="100" promptText="Amount" style="-fx-pref-width: 200px; -fx-pref-height: 35px; -fx-background-color: #BBDEFB;                       -fx-border-color: #2196F3; -fx-border-radius: 5px; -fx-padding: 5px;" />
+
+    <!-- Sélecteur de Date -->
+    <DatePicker fx:id="paymentDateField" layoutX="30" layoutY="150" style="-fx-pref-width: 200px; -fx-pref-height: 35px; -fx-background-color: #BBDEFB;                        -fx-border-color: #2196F3; -fx-border-radius: 5px; -fx-padding: 5px;" />
+
+    <!-- Champ Statut du Paiement -->
+    <TextField fx:id="paymentStatusField" layoutX="30" layoutY="200" promptText="Payment Status" style="-fx-pref-width: 200px; -fx-pref-height: 35px; -fx-background-color: #BBDEFB;                       -fx-border-color: #2196F3; -fx-border-radius: 5px; -fx-padding: 5px;" />
+
+    <!-- Boutons -->
+    <Button fx:id="addPayment" layoutX="30" layoutY="270" onAction="#addPayment" style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-weight: bold;                    -fx-pref-width: 130px; -fx-pref-height: 40px; -fx-border-radius: 5px;" text="Add Payment" />
+
+    <Button fx:id="updatePayment" layoutX="180" layoutY="270" onAction="#updatePayment" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold;                    -fx-pref-width: 130px; -fx-pref-height: 40px; -fx-border-radius: 5px;" text="Update Payment" />
+
+    <Button fx:id="deletePayment" layoutX="330" layoutY="270" onAction="#deletePayment" style="-fx-background-color: #B71C1C; -fx-text-fill: white; -fx-font-weight: bold;                    -fx-pref-width: 130px; -fx-pref-height: 40px; -fx-border-radius: 5px;" text="Delete Payment" />
+
+    <!-- Tableau des paiements -->
+    <TableView fx:id="paymentTableView" layoutX="500" layoutY="50" style="-fx-pref-width: 600px; -fx-pref-height: 300px;                       -fx-background-color: white; -fx-border-color: #2196F3; -fx-border-radius: 5px;">
+        <columns>
+            <TableColumn fx:id="paymentIdColumn" prefWidth="100" text="Payment ID" />
+            <TableColumn fx:id="memberIdColumn" prefWidth="100" text="Member ID" />
+            <TableColumn fx:id="amountColumn" prefWidth="100" text="Amount" />
+            <TableColumn fx:id="paymentDateColumn" prefWidth="150" text="Payment Date" />
+            <TableColumn fx:id="paymentStatusColumn" prefWidth="150" text="Payment Status" />
+        </columns>
+    </TableView>
+
+</AnchorPane>

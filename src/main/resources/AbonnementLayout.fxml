@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane style="-fx-background-color: #5C6BC0;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlles.AbonnementController">
+
+    <VBox alignment="CENTER" spacing="20" layoutX="50" layoutY="20">
+        <!-- Logo -->
+        <ImageView fitHeight="80" fitWidth="80">
+            <image>
+                <Image url="@/images/logo.png" />
+            </image>
+        </ImageView>
+
+        <Label text="Gestion des Abonnements" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" />
+
+        <GridPane alignment="CENTER" hgap="10" vgap="10">
+            <!-- ID Abonnement -->
+            <Label text="ID Abonnement:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-text-fill: white;" />
+            <TextField fx:id="abonnementIdField" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: #7986CB; -fx-text-fill: white;" />
+
+            <!-- Date de début -->
+            <Label text="Date de début:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-text-fill: white;" />
+            <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color: #7986CB; -fx-text-fill: white;" />
+
+            <!-- Date de fin -->
+            <Label text="Date de fin:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-text-fill: white;" />
+            <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-background-color: #7986CB; -fx-text-fill: white;" />
+
+            <!-- Prix -->
+            <Label text="Prix:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-text-fill: white;" />
+            <TextField fx:id="priceField" GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-background-color: #7986CB; -fx-text-fill: white;" />
+
+            <!-- Statut -->
+            <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-text-fill: white;" />
+            <ComboBox fx:id="statusComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-background-color: #7986CB; -fx-text-fill: white;" />
+
+            <!-- ID Membre -->
+            <Label text="ID Membre:" GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-text-fill: white;" />
+            <TextField fx:id="memberIdField" GridPane.columnIndex="1" GridPane.rowIndex="5" style="-fx-background-color: #7986CB; -fx-text-fill: white;" />
+
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+        </GridPane>
+
+        <!-- Boutons d'action -->
+        <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="addButton" onAction="#handleAddAbonnement" text="Ajouter" style="-fx-background-color: #3949AB; -fx-text-fill: white;" />
+            <Button fx:id="updateButton" onAction="#handleUpdateAbonnement" text="Mettre à jour" style="-fx-background-color: #3949AB; -fx-text-fill: white;" />
+            <Button fx:id="deleteButton" onAction="#handleDeleteAbonnement" text="Supprimer" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" />
+            <Button fx:id="PayerButton" onAction="#handleNavigate" text="Payer" style="-fx-background-color: #3949AB; -fx-text-fill: white;" />
+        </HBox>
+
+        <!-- Tableau des abonnements -->
+        <TableView fx:id="abonnementTable" prefHeight="200.0" prefWidth="650.0" style="-fx-background-color: white; -fx-border-color: #3949AB; -fx-border-radius: 5px;">
+            <columns>
+                <TableColumn fx:id="abonnementIdColumn" text="ID Abonnement" />
+                <TableColumn fx:id="startDateColumn" text="Date de début" />
+                <TableColumn fx:id="endDateColumn" text="Date de fin" />
+                <TableColumn fx:id="priceColumn" text="Prix" />
+                <TableColumn fx:id="statusColumn" text="Statut" />
+                <TableColumn fx:id="memberIdColumn" text="ID Membre" />
+            </columns>
+        </TableView>
+    </VBox>
+
+</AnchorPane>

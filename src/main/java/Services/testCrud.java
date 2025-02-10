@@ -12,8 +12,8 @@ public class testCrud {
 
         try {
             // 1. Add a new Payment
-            Payment newPayment = new Payment(1, 101, 150.50, new Date(), "Completed", 5);
-            servicePayment.ajouter(newPayment);
+            //Payment newPayment = new Payment(1, 101,15/10/2025 ,"completed", 1);
+            //servicePayment.ajouter(newPayment);
 
             // 2. Get all Payments
             System.out.println("Liste des paiements:");
