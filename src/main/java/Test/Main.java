@@ -10,7 +10,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Main UI setup (before opening Admin interface)
-        Admin.openAdminInterface();  // Call the Admin interface from Main
+        //Admin.openAdminInterface();  // Call the Admin interface from Main
+        //Member.openMemberInterface();
+        Coach.openCoachInterface();
     }
 
     public static void main(String[] args) {
