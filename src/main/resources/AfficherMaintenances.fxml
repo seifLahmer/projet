@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="564.0" prefWidth="825.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="Controllers.AfficherMaintenance">
+<AnchorPane prefHeight="564.0" prefWidth="825.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="Controllers.AfficherMaintenance" stylesheets="@style.css">
     <children>
         <!-- Title Label -->
         <Label layoutX="315.0" layoutY="23.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Liste des Maintenances" />
@@ -27,5 +27,6 @@
 
         <!-- Button to refresh the table -->
         <Button layoutX="379.0" layoutY="512.0" onAction="#refreshMaintenances" text="Actualiser" />
+        <Button text="Download Maintenance PDF" onAction="#onDownloadMaintenancePdf" />
     </children>
 </AnchorPane>

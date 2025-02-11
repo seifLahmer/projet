@@ -2,15 +2,17 @@ package Controllers;
 
 import Entite.Equipment;
 import Entite.Etat;
+import Services.ServiceEquipement;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.util.Date;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModifyEquipmentController {
 
@@ -21,11 +23,7 @@ public class ModifyEquipmentController {
     @FXML
     private TextField quantityField;
     @FXML
-    private TextField achatDateField;
-    @FXML
-    private TextField lastMaintenanceDateField;
-    @FXML
-    private TextField etatField;
+    private ComboBox<Etat> etatComboBox; // ComboBox for Etat
     @FXML
     private Button saveButton;
 
@@ -40,17 +38,18 @@ public class ModifyEquipmentController {
         categoryField.setText(equipment.getCategory());
         quantityField.setText(String.valueOf(equipment.getQuantity()));
 
-        // Format and set the dates
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        achatDateField.setText(dateFormat.format(equipment.getAchatDate()));
-        lastMaintenanceDateField.setText(dateFormat.format(equipment.getLastMaintenanceDate()));
-
-        // Set the 'etat'
-        etatField.setText(equipment.getEtat().toString());
+        // Set the 'etat' ComboBox with available Etat values
+        etatComboBox.getItems().setAll(Etat.values());  // Add all Etat values to the ComboBox
+        etatComboBox.setValue(equipment.getEtat());    // Set the current Etat to the selected value
     }
 
     @FXML
     private void onSaveButtonClick() {
+        if (currentEquipment == null) {
+            showErrorAlert("No Equipment", "No equipment selected for modification.");
+            return;  // Stop further execution if no equipment is set
+        }
+
         // Validate quantity
         int quantity;
         try {
@@ -60,17 +59,10 @@ public class ModifyEquipmentController {
             return;
         }
 
-        // Validate dates
-        Date achatDate = parseDate(achatDateField.getText());
-        Date lastMaintenanceDate = parseDate(lastMaintenanceDateField.getText());
-        if (achatDate == null || lastMaintenanceDate == null) {
-            return;
-        }
-
         // Validate etat
-        String etatStr = etatField.getText();
-        Etat etat = parseEtat(etatStr);
+        Etat etat = etatComboBox.getValue();  // Get selected Etat
         if (etat == null) {
+            showErrorAlert("Invalid Etat", "Please select a valid Etat.");
             return;
         }
 
@@ -78,8 +70,6 @@ public class ModifyEquipmentController {
         currentEquipment.setEquipementName(nameField.getText());
         currentEquipment.setCategory(categoryField.getText());
         currentEquipment.setQuantity(quantity);
-        currentEquipment.setAchatDate(achatDate);
-        currentEquipment.setLastMaintenanceDate(lastMaintenanceDate);
         currentEquipment.setEtat(etat);
 
         // Save the updated data (this could involve updating a database or list)
@@ -88,25 +78,6 @@ public class ModifyEquipmentController {
         // Close the modify window
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
-    }
-
-    private Date parseDate(String dateString) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return dateFormat.parse(dateString);
-        } catch (ParseException e) {
-            showErrorAlert("Invalid Date", "Please enter a valid date in the format yyyy-MM-dd.");
-            return null;
-        }
-    }
-
-    private Etat parseEtat(String etatStr) {
-        try {
-            return Etat.valueOf(etatStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            showErrorAlert("Invalid Etat", "Please enter a valid Etat (Available, In Maintenance, Out of Service).");
-            return null;
-        }
     }
 
     private void showErrorAlert(String title, String message) {
@@ -118,10 +89,23 @@ public class ModifyEquipmentController {
     }
 
     private void saveUpdatedEquipment(Equipment equipment) {
-        // Logic to save the modified equipment (could update the equipment in a database or list)
+        // Create an instance of ServiceEquipement
+        ServiceEquipement serviceEquipement = new ServiceEquipement();
+
+        // Now create the update data map
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("EquipementName", equipment.getEquipementName());
+        updateData.put("Category", equipment.getCategory());
+        updateData.put("Quantity", equipment.getQuantity());
+        updateData.put("Etat", equipment.getEtat());
+
+        // Now call update on the instance of ServiceEquipement
+        serviceEquipement.update(equipment, updateData);  // Correct method call
+
         System.out.println("Equipment saved: " + equipment);
     }
 
-    public void initialize(Equipment equipment) {
-    }
+
+
+
 }

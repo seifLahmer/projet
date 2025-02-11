@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="652.0" prefWidth="609.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterEquipementController">
+<AnchorPane prefHeight="652.0" prefWidth="609.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterEquipementController" >
 
     <TextField fx:id="equipementNameField" layoutX="252.0" layoutY="218.0" promptText="Nom de l'equipement" />
     <TextField fx:id="categoryField" layoutX="252.0" layoutY="263.0" promptText="Catégorie" />

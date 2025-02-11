@@ -3,14 +3,13 @@ package Controllers;
 import Entite.Equipment;
 import Entite.Etat;
 import Services.ServiceEquipement;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.DatePicker;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class AjouterEquipementController {
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ModifyMaintenanceController" spacing="10" style="-fx-padding: 10;" stylesheets="@style.css">
+    <!-- Input fields for modifying maintenance -->
+    <TextField fx:id="descriptionField" promptText="Enter description" />
+    <DatePicker fx:id="maintenanceDateField" promptText="Select maintenance date" />
+    <TextField fx:id="coutField" promptText="Enter cost" />
+    <TextField fx:id="effectueParField" promptText="Enter technician name" />
+
+    <!-- Save button -->
+    <Button fx:id="saveButton" text="Save" onAction="#onSaveButtonClick" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+</VBox>

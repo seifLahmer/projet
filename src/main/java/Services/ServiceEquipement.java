@@ -88,7 +88,6 @@ public class ServiceEquipement {
         return equipment;
     }
 
-    // Update equipment details
     public void update(Equipment newEquipment, Map<String, Object> updateData) {
         StringBuilder queryBuilder = new StringBuilder("UPDATE equipement SET ");
         for (String key : updateData.keySet()) {
@@ -118,6 +117,7 @@ public class ServiceEquipement {
             e.printStackTrace();
         }
     }
+
 
     // Delete equipment
     public void supprimer(Equipment equipment) {
