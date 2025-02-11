@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="898.0" prefWidth="1334.0" style="-fx-background-color: purple;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficherPersonneController">
+<children>
+    <TableView fx:id="tableMember" layoutX="160.0" prefHeight="835.0" prefWidth="1174.0" style="-fx-background-color: white;">
+        <columns>
+            <TableColumn fx:id="MemberId" prefWidth="75.0" text="MemberId" />
+            <TableColumn fx:id="FirstName" prefWidth="75.0" text="FirstName" />
+            <TableColumn fx:id="LastName" prefWidth="75.0" text="LastName" />
+            <TableColumn fx:id="Email" prefWidth="75.0" text="Email" />
+            <TableColumn fx:id="Gender" prefWidth="75.0" text="Gender" />
+            <TableColumn fx:id="PhoneNumber" prefWidth="104.0" text="PhoneNumber" />
+            <TableColumn fx:id="Schedule" prefWidth="72.0" text="Schedule" />
+            <TableColumn fx:id="StartDate" prefWidth="141.0" text="StartDate" />
+            <TableColumn fx:id="EndDate" prefWidth="130.0" text="EndDate" />
+            <TableColumn fx:id="Price" prefWidth="76.0" text="Price" />
+            <TableColumn fx:id="Status" prefWidth="67.0" text="Status" />
+            <TableColumn fx:id="SubscriptionType" prefWidth="130.0" text="SubscriptionType" />
+            <TableColumn fx:id="Role" prefWidth="72.0" text="Role" />
+        </columns>
+    </TableView>
+    <Button layoutX="1016.0" layoutY="837.0" onAction="#handleUpdate" prefHeight="39.0" prefWidth="145.0" style="-fx-background-color: green;" text="Update" textFill="#cc0a06" />
+    <Button layoutX="1186.0" layoutY="837.0" onAction="#handleDelete" prefHeight="39.0" prefWidth="134.0" style="-fx-background-color: green;" text="Delete" textFill="#cc0a06" />
+    <Button layoutX="847.0" layoutY="837.0" onAction="#handleAdd" prefHeight="39.0" prefWidth="134.0" style="-fx-background-color: green;" text="ADD" textFill="#cc0a06" />
+      <ImageView fitHeight="166.0" fitWidth="169.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../gymflow_manag.png" />
+         </image>
+      </ImageView>
+</children>
+</AnchorPane>
