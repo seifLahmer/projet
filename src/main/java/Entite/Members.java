@@ -2,7 +2,7 @@ package Entite;
 
 import java.util.Date;
 
-public class Member {
+public class Members {
     private int memberId;
     private String firstName;
     private String lastName;
@@ -18,13 +18,13 @@ public class Member {
     private String role;
 
     // Default constructor
-    public Member() {
+    public Members() {
     }
 
     // Parameterized constructor
-    public Member(int memberId, String firstName, String lastName, String email, char gender,
-                  String phoneNumber, String schedule, Date startDate, Date endDate,
-                  float price, boolean status, String subscriptionType, String role) {
+    public Members(int memberId, String firstName, String lastName, String email, char gender,
+                   String phoneNumber, String schedule, Date startDate, Date endDate,
+                   float price, boolean status, String subscriptionType, String role) {
         this.memberId = memberId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -147,7 +147,7 @@ public class Member {
 
     @Override
     public String toString() {
-        return "Member{" +
+        return "Members{" +
                 "memberId=" + memberId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

@@ -1,6 +1,15 @@
 package Controllers;
+import javafx.geometry.Pos;
+import javafx.geometry.Insets;
+import Services.ServiceActivity;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 import Entite.Reservation;
+import  Entite.Activity;
 import Services.ServiceReservation;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +29,7 @@ public class ActivitesReserveesController {
 
     @FXML
     private FlowPane activitesReserveesContainer;
+    private ServiceActivity serviceActivity = new ServiceActivity();
 
     private ServiceReservation reservationService = new ServiceReservation();
     private int membreId = 1; // À remplacer dynamiquement si besoin
@@ -36,21 +46,55 @@ public class ActivitesReserveesController {
     private void afficherReservations() throws SQLException {
         activitesReserveesContainer.getChildren().clear();
 
-        // 🔎 Récupération des réservations du membre
+        // Retrieve member reservations
         List<Reservation> reservationsMembre = reservationService.getReservationsParMembre(membreId);
-        System.out.println("🔎 Réservations trouvées : " + reservationsMembre.size());
+        System.out.println("🔎 Reservations found: " + reservationsMembre.size());
 
         for (Reservation reservation : reservationsMembre) {
+            // Retrieve the full activity details using the activityId from the reservation.
+            Activity activity = serviceActivity.getById(reservation.getActivityId());
+
+            // Create the card container
             VBox card = new VBox(10);
-            card.setStyle("-fx-border-color: black; -fx-padding: 10; -fx-background-color: #f0f0f0;");
-            card.setMinWidth(200);
+            card.setAlignment(Pos.CENTER_LEFT);
+            card.setPadding(new Insets(15));
+            card.setMinWidth(220);
 
-            Label nomLabel = new Label("Activité: " + reservation.getActivityId()); // Utilisation de l'ID pour l'instant
-            Label dateLabel = new Label("Date: " + reservation.getReservationDate());
-            Button supprimerButton = new Button("Annuler");
+            // Style the card with a white background, rounded corners, a light border, and a drop shadow.
+            card.setStyle(
+                    "-fx-background-color: #ffffff; " +
+                            "-fx-background-radius: 8; " +
+                            "-fx-border-radius: 8; " +
+                            "-fx-border-color: #e0e0e0; " +
+                            "-fx-border-width: 1; " +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0, 0, 2);"
+            );
 
-            // 🗑️ Suppression de la réservation
-            supprimerButton.setOnAction(e -> {
+            // Create and style the label for the activity name.
+            Label nameLabel = new Label("Activity: " + activity.getActivityName());
+            nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+
+            // Create and style the label for the activity date.
+            Label dateLabel = new Label("Date: " + activity.getDate().toString());
+            dateLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
+
+            // Create and style the label for the activity time.
+            Label timeLabel = new Label("Time: " + activity.getHour().toString());
+            timeLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
+
+            // Create and style the label for the activity duration.
+            Label durationLabel = new Label("Duration: " + activity.getDuration() + " min");
+            durationLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
+
+            // Create and style the delete button.
+            Button deleteButton = new Button("Delete");
+            deleteButton.setStyle(
+                    "-fx-background-color: #e74c3c; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-background-radius: 5; " +
+                            "-fx-cursor: hand;"
+            );
+            deleteButton.setOnAction(e -> {
                 try {
                     supprimerReservation(reservation.getReservationId());
                 } catch (SQLException ex) {
@@ -58,10 +102,13 @@ public class ActivitesReserveesController {
                 }
             });
 
-            card.getChildren().addAll(nomLabel, dateLabel, supprimerButton);
+            // Add all components to the card
+            card.getChildren().addAll(nameLabel, dateLabel, timeLabel, durationLabel, deleteButton);
             activitesReserveesContainer.getChildren().add(card);
         }
     }
+
+
 
     private void supprimerReservation(int reservationId) throws SQLException {
         System.out.println("🗑️ Suppression de la réservation ID : " + reservationId);

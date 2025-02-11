@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import javafx.scene.image.Image;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -16,8 +16,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/Activity.fxml"));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Reservation.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Activity.fxml"));
+        // FXMLLoader loader = new FXMLLoader(getClass().getResource("/Reservation.fxml"));
         //FXMLLoader loader = new FXMLLoader(getClass().getResource("/activites_reservees.fxml"));
         Parent root = null;
         try {
@@ -26,7 +26,7 @@ public class Main extends Application {
             throw new RuntimeException(e);
         }
         Scene scene = new Scene(root);
-        stage.setTitle("Ajouter");
+        stage.setTitle("GYM FLOW");
         stage.setScene(scene);
         stage.show();
     }

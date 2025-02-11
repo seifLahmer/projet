@@ -2,11 +2,15 @@ package Services;
 
 import Entite.Reservation;
 import Utils.DataSource;
-
+import Entite.Activity;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 
 public class ServiceReservation implements IService<Reservation> {
 
@@ -135,5 +139,40 @@ public class ServiceReservation implements IService<Reservation> {
 
         pre.executeUpdate();
         System.out.println("Réservation ajoutée.");
+    }
+    public boolean hasTimeConflict(int memberId, Activity newActivity) throws SQLException {
+        String query = "SELECT a.date, a.hour, a.duration " +
+                "FROM Reservation r " +
+                "JOIN Activity a ON r.activityId = a.activityId " +
+                "WHERE r.memberId = ?";
+        PreparedStatement pre = conn.prepareStatement(query);
+        pre.setInt(1, memberId);
+        ResultSet rs = pre.executeQuery();
+
+        // Convert the new activity's date and start time to LocalDate and LocalTime.
+        // Assuming newActivity.getDate() returns a java.sql.Date
+        LocalDate newActivityDate = ((java.sql.Date)newActivity.getDate()).toLocalDate();
+        LocalTime newActivityStart = newActivity.getHour().toLocalTime();
+        LocalTime newActivityEnd = newActivityStart.plusMinutes(newActivity.getDuration());
+
+        while (rs.next()) {
+            java.sql.Date sqlDate = rs.getDate("date");
+            LocalDate existingDate = sqlDate.toLocalDate();
+            if (existingDate.equals(newActivityDate)) {
+                // If the dates are the same, check the time intervals.
+                Time sqlTime = rs.getTime("hour");
+                LocalTime existingStart = sqlTime.toLocalTime();
+                int existingDuration = rs.getInt("duration");
+                LocalTime existingEnd = existingStart.plusMinutes(existingDuration);
+
+                // Check for overlapping intervals:
+                // If newActivityStart is before the existing activity's end
+                // and the existing activity's start is before newActivityEnd, there is a conflict.
+                if (newActivityStart.isBefore(existingEnd) && existingStart.isBefore(newActivityEnd)) {
+                    return true; // Conflict exists.
+                }
+            }
+        }
+        return false; // No conflicts found.
     }
 }

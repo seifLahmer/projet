@@ -178,33 +178,46 @@ public class ReservationController {
 // Détails de l'activité
         VBox details = new VBox(5);
         details.getChildren().addAll(
-                createStyledLabel("Activité : " + activite.getActivityName()),
+                createStyledLabel("Activity : " + activite.getActivityName()),
                 createStyledLabel("Description : " + activite.getDescription()),
                 createStyledLabel("Date : " + activite.getDate()),
-                createStyledLabel("Heure : " + activite.getHour()),
-                createStyledLabel("Durée : " + activite.getDuration() + " min"),
-                createStyledLabel("Places disponibles : " + activite.getMaxMembers())
+                createStyledLabel("Hour : " + activite.getHour()),
+                createStyledLabel("Duration : " + activite.getDuration() + " min"),
+                createStyledLabel("Max Members : " + activite.getMaxMembers())
         );
         details.setStyle("-fx-background-color: white; -fx-padding: 10px;");
 
 // Bouton Reservation
-        Button reserverButton = new Button("Reservation");
-        reserverButton.setStyle("-fx-background-color: #393969; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 5;");
+        Button reserverButton = new Button("Reserve");
+        reserverButton.setStyle("-fx-background-color: #393969; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 20px; -fx-background-radius: 5;");
         reserverButton.setMaxWidth(Double.MAX_VALUE); // Étaler le bouton sur toute la largeur
         reserverButton.setOnAction(e -> {
             try {
+                // Check for conflicting reservation first
+                if (serviceReservation.hasTimeConflict(membreId, activite)) {
+                    Alert conflictAlert = new Alert(Alert.AlertType.ERROR);
+                    conflictAlert.setTitle("Reservation Conflict");
+                    conflictAlert.setHeaderText(null);
+                    conflictAlert.setContentText("You already have a reservation that conflicts with this activity!");
+                    conflictAlert.showAndWait();
+                    return; // Do not proceed with the reservation.
+                }
+
+                // No conflict detected; proceed to add the reservation.
                 serviceReservation.ajouterReservation(membreId, activite.getActivityId());
 
-                // Générer le PDF
+                // Generate the PDF confirmation
                 PDFReservation.generateActivityPdf(activite, membreId);
+
+                // Refresh the activities list
                 afficherActivitesDisponibles();
 
-                // Afficher un message de confirmation
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Réservation Confirmée");
-                alert.setHeaderText(null);
-                alert.setContentText("Votre réservation a été enregistrée et un PDF a été généré !");
-                alert.showAndWait(); // Mise à jour après réservation
+                // Show confirmation alert
+                Alert confirmationAlert = new Alert(Alert.AlertType.INFORMATION);
+                confirmationAlert.setTitle("Reservation Confirmed");
+                confirmationAlert.setHeaderText(null);
+                confirmationAlert.setContentText("Your reservation has been recorded and a PDF has been generated!");
+                confirmationAlert.showAndWait();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

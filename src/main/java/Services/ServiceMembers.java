@@ -1,18 +1,16 @@
 package Services;
 
-import Entite.Activity;
-import Entite.Member;
+import Entite.Members;
 import Utils.DataSource;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class ServiceMember implements IService<Member> {
+public class ServiceMembers implements IService<Members> {
     private Connection conn = DataSource.getInstance().getCon();
     private Statement stat= null ;
-    public ServiceMember() {
+    public ServiceMembers() {
         try {
             stat = conn.createStatement();
         } catch (SQLException e) {
@@ -21,28 +19,28 @@ public class ServiceMember implements IService<Member> {
     }
 
     @Override
-    public void ajouter(Member member) throws SQLException {
+    public void ajouter(Members member) throws SQLException {
 
     }
 
     @Override
-    public void supprimer(Member member) throws SQLException {
+    public void supprimer(Members member) throws SQLException {
 
     }
 
     @Override
-    public void update(Member member) throws SQLException {
+    public void update(Members member) throws SQLException {
 
     }
 
     @Override
-    public List<Member> getAll() throws SQLException {
-        List<Member> list = new ArrayList<>();
+    public List<Members> getAll() throws SQLException {
+        List<Members> list = new ArrayList<>();
 
         ResultSet reset = stat.executeQuery("SELECT * FROM Member");
         while (reset.next()) {
-            // Create a Member object and populate its fields
-            Member member = new Member();
+            // Create a Members object and populate its fields
+            Members member = new Members();
             member.setMemberId(reset.getInt("MemberId"));
             member.setFirstName(reset.getString("FirstName"));
             member.setLastName(reset.getString("LastName"));
@@ -57,13 +55,13 @@ public class ServiceMember implements IService<Member> {
             member.setSubscriptionType(reset.getString("SubscriptionType"));
             member.setRole(reset.getString("role"));
 
-            // Add the Member object to the list
+            // Add the Members object to the list
             list.add(member);
         }
         return list;
     }
     @Override
-    public Member getById(int id) throws SQLException {
+    public Members getById(int id) throws SQLException {
         return null;
     }
 }

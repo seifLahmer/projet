@@ -1,15 +1,14 @@
 package Entite;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MemberList {
 
-    private List<Member> members ;
-    public MemberList(List<Member> members) {
+    private List<Members> members ;
+    public MemberList(List<Members> members) {
        this.members = members;
     }
-    public List<Member> getCoaches() {
+    public List<Members> getCoaches() {
         return members.stream().filter(
                         m -> m.getRole().equalsIgnoreCase("coach")
                 )

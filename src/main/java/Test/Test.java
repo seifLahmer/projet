@@ -32,7 +32,7 @@ public class Test {
                     List<Reservation> reservations = serviceReservation.getAll();
                     for (Reservation res : reservations) {
                         System.out.println("Reservation ID: " + res.getReservationId() +
-                                ", Member ID: " + res.getMemberId() +
+                                ", Members ID: " + res.getMemberId() +
                                 ", Activity ID: " + res.getActivityId() +
                                 ", Date: " + res.getReservationDate());
                     }

@@ -1,10 +1,10 @@
 package Controllers;
 
 import Entite.Activity;
-import Entite.Member;
+import Entite.Members;
 import Entite.MemberList;
 import Services.ServiceActivity;
-import Services.ServiceMember;
+import Services.ServiceMembers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -55,7 +55,7 @@ public class ActivityController {
     private ComboBox<String> listID;
 
 
-    ServiceMember sm = new ServiceMember();
+    ServiceMembers sm = new ServiceMembers();
 
     private boolean validateInput() {
         String errorMessage = "";
@@ -281,7 +281,7 @@ public class ActivityController {
 
         try {
             // Fetch coach names
-            List<Member> coaches = ml.getCoaches();
+            List<Members> coaches = ml.getCoaches();
             if (coaches.isEmpty()) {
                 System.out.println("No coaches found.");
             }
@@ -352,19 +352,19 @@ public class ActivityController {
     public int onCoachSelected() throws SQLException {
 
         MemberList ml = new MemberList(sm.getAll());
-        List<Member> coaches = ml.getCoaches();
+        List<Members> coaches = ml.getCoaches();
         String selectedCoach = listID.getSelectionModel().getSelectedItem();
 
         if (selectedCoach == null) {
             System.out.println("Aucun coach sélectionné.");
             return -1;
         }
-        Optional<Member> coachOpt = coaches.stream()
+        Optional<Members> coachOpt = coaches.stream()
                 .filter(coach -> (coach.getFirstName() + " " + coach.getLastName()).equals(selectedCoach))
                 .findFirst();
 
         // Si un coach est trouvé, retourne son ID, sinon retourne -1
-        return coachOpt.map(Member::getMemberId).orElseGet(() -> {
+        return coachOpt.map(Members::getMemberId).orElseGet(() -> {
             System.out.println("Coach sélectionné non trouvé dans la liste.");
             return -1; // Retourne une valeur négative si le coach n'est pas trouvé
         });
