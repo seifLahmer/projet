@@ -32,15 +32,17 @@ public class Member extends Application {
         sideMenu.setSpacing(10);
 
         // Create buttons for activity reservation
-        Button reserveActivityButton = createButtonWithIcon("Réserver une activité", "/activity.png", "/ReserverActivite.fxml");
+        Button reserveActivityButton = createButtonWithIcon("Reserve An Activity", "/activity.png", "/Reservation.fxml");
         Button managePaymentButton = createButtonWithIcon("Gérer le paiement", "/payment.png", "/GererPaiement.fxml");
         Button calculateCaloriesButton = createButtonWithIcon("Calcul calories", "/calories.png", "/CalculCalories.fxml");
+        Button reservedActivitiesButton = createButtonWithIcon("Planning","/activity.png","activites_reservees.fxml");
 
         // Add all buttons to the menu
         sideMenu.getChildren().addAll(
                 reserveActivityButton,
                 managePaymentButton,
-                calculateCaloriesButton
+                calculateCaloriesButton,
+                reservedActivitiesButton
         );
 
         // Create toggle button (burger menu)
