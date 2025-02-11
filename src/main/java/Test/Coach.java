@@ -35,12 +35,14 @@ public class Coach extends Application {
         Button foodButton = createButtonWithIcon("Ajouter un Aliment  ", "/food.png", "/AddFood.fxml");
         Button dietButton = createButtonWithIcon("Gestion des régimes", "/diet.png", "/diet_plan.fxml");
         Button activitiesButton = createButtonWithIcon("Calcul calories", "/activities.png", "/AjouterCalorie.fxml");
+        Button activityButton = createButtonWithIcon("Activities" , "/activities.png","/Activity.fxml");
 
         // Add all buttons to the menu
         sideMenu.getChildren().addAll(
                 foodButton,
                 dietButton,
-                activitiesButton
+                activitiesButton,
+                activityButton
         );
 
         // Create toggle button (burger menu)
