@@ -7,7 +7,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="Controllers.ReservationController"
-      spacing="10" alignment="CENTER" style="-fx-padding: 20px; -fx-pref-width: 700px;">
+      spacing="10" alignment="CENTER" style="-fx-padding: 20px;">
 
     <Label text="Activités Disponibles" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
@@ -18,12 +18,9 @@
         <Button text="Filtrer" onAction="#filtrerActivites"/>
     </HBox>
 
-    <!-- Liste des activités avec ScrollPane -->
-    <ScrollPane fx:id="scrollPaneActivites" fitToWidth="true"
-                style="-fx-background: transparent; -fx-border-color: gray;"
-                prefHeight="400" prefWidth="680">
-        <VBox fx:id="activitesDispoContainer" spacing="10" alignment="CENTER"
-              style="-fx-pref-width: 660px; -fx-padding: 10px;"/>
+    <!-- Liste des activités -->
+    <ScrollPane fitToWidth="true" style="-fx-background: transparent;">
+        <VBox fx:id="activitesDispoContainer" spacing="15" alignment="CENTER"/>
     </ScrollPane>
 
     <Button text="Voir mes réservations" onAction="#afficherMesReservations"

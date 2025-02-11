@@ -5,7 +5,7 @@
 <?import javafx.geometry.*?>
 
 <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="Controllers.ActivitesReserveesController"
+      fx:controller="Controllers.ActivitesReservees"
       spacing="10" alignment="CENTER">
 
     <Label text="Vos Réservations" style="-fx-font-size: 18px;"/>
