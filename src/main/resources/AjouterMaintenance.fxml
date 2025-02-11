@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controllers.AjouterMaintenanceController" style="-fx-padding: 20;">
+    <Label text="Ajouter une Maintenance" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="ID Équipement:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="equipementIdField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Date de Maintenance:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="maintenanceDatePicker" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Description:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="descriptionField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Coût:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="coutField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Effectué Par:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="effectueParField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+
+
+    <Button text="Ajouter Maintenance" onAction="#handleAddMaintenance" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+</VBox>

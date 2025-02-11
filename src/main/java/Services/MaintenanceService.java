@@ -79,5 +79,21 @@ public class MaintenanceService {
         }
     }
 
-    // Other methods...
+    public void add(Maintenance maintenance) {
+        String query = "INSERT INTO maintenance (EquipementID, MaintenanceDate, Description, Cout, EffectuePar) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, maintenance.getEquipementId());
+            ps.setDate(2, new java.sql.Date(maintenance.getMaintenanceDate().getTime()));
+            ps.setString(3, maintenance.getDescription());
+            ps.setDouble(4, maintenance.getCout());
+            ps.setString(5, maintenance.getEffectuePar());
+
+            ps.executeUpdate();
+            System.out.println("Maintenance ajoutée avec succès");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
