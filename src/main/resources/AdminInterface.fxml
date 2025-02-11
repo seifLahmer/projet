@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AdminController">
+    <top>
+        <HBox spacing="10" style="-fx-background-color: #393969; -fx-padding: 10;">
+            <ImageView fx:id="logoView" fitWidth="40" fitHeight="40"/>
+            <Button text="&#x2630;" style="-fx-font-size: 18px; -fx-background-color: transparent; -fx-text-fill: white;" fx:id="toggleButton" onAction="#handleToggleButton"/>
+            <Button text="Sign Out" style="-fx-font-size: 14px; -fx-background-color: #e74c3c; -fx-text-fill: white;" fx:id="signOutButton"/>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox fx:id="sideMenu" style="-fx-background-color: #393969; -fx-padding: 10;" spacing="10">
+            <Button text="Gérer équipements" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="manageEquipmentButton" onAction="#handleManageEquipment"/>
+            <VBox fx:id="equipmentButtons" visible="false">
+                <Button text="Afficher équipements" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="viewEquipmentsButton"/>
+                <Button text="Ajouter équipement" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="addEquipmentButton"/>
+                <Button text="Modifier équipement" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="editEquipmentButton"/>
+            </VBox>
+
+            <Button text="Gérer maintenances" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="manageMaintenanceButton" onAction="#handleManageMaintenance"/>
+            <VBox fx:id="maintenanceButtons" visible="false">
+                <Button text="Afficher maintenances" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="viewMaintenancesButton"/>
+                <Button text="Ajouter maintenance" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="addMaintenanceButton"/>
+                <Button text="Modifier maintenance" style="-fx-font-size: 14px; -fx-background-color: #393969; -fx-text-fill: white;" fx:id="editMaintenanceButton"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <Label text="Welcome to the Equipment Management System" style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;"/>
+    </center>
+</BorderPane>
